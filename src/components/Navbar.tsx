@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { Menu, X, RefreshCw } from "lucide-react";
+import { SignedIn, SignedOut } from "@clerk/react-router";
+import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,21 +42,28 @@ export const Navbar = () => {
             </div>
           </div>
           <div className="hidden md:block">
-            {/* <div className="ml-10 flex items-center space-x-8">
-              <a
-                href="#how-it-works"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                Dashboard
-              </a>
-              <button className="bg-destructive text-white font-medium px-4 py-2 rounded-md hover:shadow-lg transition-all cursor-pointer">
-                Logout
-              </button>
-            </div> */}
+            <SignedIn>
+              <div className="ml-10 flex items-center space-x-8">
+                <a
+                  href="#how-it-works"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  Dashboard
+                </a>
+                <button className="bg-destructive text-white font-medium px-4 py-2 rounded-md hover:shadow-lg transition-all cursor-pointer">
+                  Logout
+                </button>
+              </div>
+            </SignedIn>
 
-            <button className="bg-gradient-to-r from-[#00ffae] to-[#00e0ff] text-[#0e0e10] font-medium px-4 py-2 rounded-md hover:shadow-lg hover:shadow-[#00ffae]/20 transition-all cursor-pointer">
-              Login
-            </button>
+            <SignedOut>
+              <button
+                className="bg-gradient-to-r from-[#00ffae] to-[#00e0ff] text-[#0e0e10] font-medium px-4 py-2 rounded-md hover:shadow-lg hover:shadow-[#00ffae]/20 transition-all cursor-pointer"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </button>
+            </SignedOut>
           </div>
           <div className="md:hidden">
             <button

@@ -1,5 +1,6 @@
 import { Logo } from "./Logo";
 import { NavItem, navItems } from "./NavItem";
+import { LogOut } from "lucide-react";
 
 export const Sidebar = () => {
   return (
@@ -14,13 +15,16 @@ export const Sidebar = () => {
           ))}
         </nav>
       </div>
-      <div className="p-4 border-t border-gray-800">
+      <div className="p-4 border-t border-gray-800 flex flex-row justify-between items-center">
         <div className="flex items-center space-x-2">
           <div className="h-8 w-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500"></div>
           <div>
             <p className="text-sm text-white">Alex Morgan</p>
             <p className="text-xs text-gray-400">alex@example.com</p>
           </div>
+        </div>
+        <div className="cursor-pointer">
+          <LogOut color="#b23b3b" />
         </div>
       </div>
     </div>

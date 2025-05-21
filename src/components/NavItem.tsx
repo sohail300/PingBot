@@ -1,50 +1,45 @@
 import { motion } from "framer-motion";
-import { Home, Plus, List, User } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Home, Plus, List } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const navItems = [
   {
     name: "Dashboard",
     icon: Home,
-    active: true,
     link: "",
   },
   {
     name: "Add Endpoint",
     icon: Plus,
-    active: false,
     link: "add-endpoint",
   },
   {
     name: "Logs",
     icon: List,
-    active: false,
     link: "logs",
-  },
-  {
-    name: "Account",
-    icon: User,
-    active: false,
-    link: "account",
   },
 ];
 
 type NavItemType = {
   name: string;
   icon: React.ComponentType<{ size?: number }>;
-  active: boolean;
   link: string;
 };
 
 // Navigation Item component
 export const NavItem = ({ item }: { item: NavItemType }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive =
+    location.pathname === `/dashboard/${item.link}` ||
+    (location.pathname === "/dashboard" && item.link === "");
 
   const Icon = item.icon;
   return (
     <motion.div
       className={`flex items-center space-x-2 px-4 py-3 rounded-lg cursor-pointer ${
-        item.active
+        isActive
           ? "bg-[#00ffae]/10 text-[#00ffae]"
           : "text-gray-400 hover:bg-[#00ffae]/5 hover:text-gray-100"
       }`}

@@ -46,17 +46,16 @@ const AddEndpointForm = () => {
     isSubmitting: false,
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSwitchChange = (checked) => {
+  const handleSwitchChange = (checked: boolean) => {
     setFormData((prev) => ({ ...prev, emailNotifications: checked }));
   };
 
-  const handleSubmit = (e) => {
-    if (e) e.preventDefault();
+  const handleSubmit = () => {
     setFormData((prev) => ({ ...prev, isSubmitting: true }));
 
     // Simulate API call
@@ -131,7 +130,7 @@ const AddEndpointForm = () => {
           Cancel
         </Button>
         <Button
-          onClick={handleSubmit}
+          onClick={() => handleSubmit()}
           disabled={formData.isSubmitting}
           className="w-full sm:w-auto sm:flex-1 text-black font-medium bg-gradient-to-r from-[#00ffae] to-[#00e0ff] hover:opacity-90 disabled:opacity-50"
         >
