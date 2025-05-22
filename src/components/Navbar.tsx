@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Menu, X, RefreshCw } from "lucide-react";
-import { SignedIn, SignedOut } from "@clerk/react-router";
+import { SignedIn, SignedOut, useClerk } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+
+  const { signOut } = useClerk();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,12 +47,15 @@ export const Navbar = () => {
             <SignedIn>
               <div className="ml-10 flex items-center space-x-8">
                 <a
-                  href="#how-it-works"
+                  href="/dashboard"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   Dashboard
                 </a>
-                <button className="bg-destructive text-white font-medium px-4 py-2 rounded-md hover:shadow-lg transition-all cursor-pointer">
+                <button
+                  className="bg-destructive text-white font-medium px-4 py-2 rounded-md hover:shadow-lg transition-all cursor-pointer"
+                  onClick={() => signOut()}
+                >
                   Logout
                 </button>
               </div>
@@ -80,23 +85,30 @@ export const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-[#0e0e10]/95 backdrop-blur-sm">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {/* <a
-              href="#"
-              className="text-gray-300 hover:text-white block px-3 py-2 rounded-md"
-              onClick={() => setIsOpen(false)}
-            >
-              Dashboard
-            </a>
-            <button className="text-destructive font-medium px-4 py-2 rounded-md hover:shadow-lg transition-all cursor-pointer">
-              Logout
-            </button> */}
+            <SignedIn>
+              <a
+                href="/dashboard"
+                className="text-gray-300 hover:text-white block px-3 py-2 rounded-md"
+                onClick={() => setIsOpen(false)}
+              >
+                Dashboard
+              </a>
+              <button
+                className="text-destructive font-medium px-4 py-2 rounded-md hover:shadow-lg transition-all cursor-pointer"
+                onClick={() => signOut()}
+              >
+                Logout
+              </button>
+            </SignedIn>
 
-            <button
-              className="w-full mt-2 bg-gradient-to-r from-[#00ffae] to-[#00e0ff] text-[#0e0e10] font-medium px-3 py-2 rounded-md cursor-pointer"
-              onClick={() => setIsOpen(false)}
-            >
-              Login
-            </button>
+            <SignedOut>
+              <button
+                className="w-full mt-2 bg-gradient-to-r from-[#00ffae] to-[#00e0ff] text-[#0e0e10] font-medium px-3 py-2 rounded-md cursor-pointer"
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+              </button>
+            </SignedOut>
           </div>
         </div>
       )}

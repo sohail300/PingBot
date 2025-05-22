@@ -1,0 +1,60 @@
+STEP 1
+Place these in main.tsx
+import { ClerkProvider } from "@clerk/clerk-react";
+<ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+
+STEP 2
+Make this route in App.tsx because the clerk uses this url to login. (Here login is the route in which we are displaying the login page)
+import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react";
+<Route
+    path="/login/sso-callback"
+    element={<AuthenticateWithRedirectCallback />}
+/>
+
+STEP 3
+Place this component in the login page
+import { SignIn } from "@clerk/clerk-react";
+<SignIn />
+
+STEP 4
+When Signed out, these particular components will be displayed and the same for when the user is Signed In.
+<SignedIn>
+              <div className="ml-10 flex items-center space-x-8">
+                <a
+                  href="#how-it-works"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
+                  Dashboard
+                </a>
+                <button
+                  className="bg-destructive text-white font-medium px-4 py-2 rounded-md hover:shadow-lg transition-all cursor-pointer"
+                  onClick={() => signOut()}
+                >
+                  Logout
+                </button>
+              </div>
+            </SignedIn>
+
+            <SignedOut>
+              <button
+                className="bg-gradient-to-r from-[#00ffae] to-[#00e0ff] text-[#0e0e10] font-medium px-4 py-2 rounded-md hover:shadow-lg hover:shadow-[#00ffae]/20 transition-all cursor-pointer"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </button>
+            </SignedOut>
+
+STEP 5
+Place the client id and secret in the Clerk settings and give the same redirect url in github and google which clerk provides.
+
+STEP 6
+We can use the hooks for getting various info and methods
+
+We can use this signout function to signout
+const { signOut } = useClerk();
+<button
+                  className="bg-destructive text-white font-medium px-4 py-2 rounded-md hover:shadow-lg transition-all cursor-pointer"
+                  onClick={() => signOut()}
+                >
+                  Logout
+                </button>
