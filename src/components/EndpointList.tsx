@@ -36,7 +36,7 @@ export const EndpointList = ({ endpoints }: EndpointListProps) => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8"
     >
       {endpoints.map((endpoint) => (
         <EndpointCard key={endpoint.id} endpoint={endpoint} />
@@ -90,8 +90,8 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
     >
       <div className="flex flex-col space-y-4">
         {/* Header Section */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-between relative">
+          <div className="flex items-center space-x-2 w-4/5">
             <h3 className="text-white font-medium truncate max-w-xs">
               {endpoint.url}
             </h3>
@@ -192,7 +192,9 @@ const StatusBadge = ({ status }: { status: string }) => {
   }
 
   return (
-    <Badge className={`${color} text-white text-xs px-2 py-1 rounded-full`}>
+    <Badge
+      className={`${color} text-white text-xs px-2 py-1 rounded-full absolute top-0 right-0`}
+    >
       {status}
     </Badge>
   );

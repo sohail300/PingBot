@@ -3,13 +3,20 @@ import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import "./App.css";
 import { DashboardComponent } from "./components/Dashboard";
-import AddEndpoint from "./components/AddEndpoint";
+import AddEndpoint from "./pages/AddEndpoint";
 import ErrorPage404 from "./pages/404ErrorPage";
 import Logs from "./pages/Logs";
 import Login from "./pages/Login";
-import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react";
+import { AuthenticateWithRedirectCallback, useUser } from "@clerk/clerk-react";
+import Loading from "./components/Loading";
 
 function App() {
+  const { isLoaded } = useUser();
+
+  if (!isLoaded) {
+    return <Loading />;
+  }
+
   return (
     <div className="bg-[#0e0e10] min-h-screen text-white">
       <Routes>

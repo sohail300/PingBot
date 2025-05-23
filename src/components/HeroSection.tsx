@@ -1,4 +1,9 @@
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
+
 export const HeroSection = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0e0e10] pt-16">
       <PingAnimation />
@@ -16,9 +21,22 @@ export const HeroSection = () => {
             when your services go down.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="px-8 py-4 rounded-md bg-gradient-to-r from-[#00ffae] to-[#00e0ff] text-[#0e0e10] font-bold text-lg hover:shadow-lg hover:shadow-[#00ffae]/30 transition-all cursor-pointer">
-              Get Started
-            </button>
+            <SignedOut>
+              <button
+                className="px-8 py-4 rounded-md bg-gradient-to-r from-[#00ffae] to-[#00e0ff] text-[#0e0e10] font-bold text-lg hover:shadow-lg hover:shadow-[#00ffae]/30 transition-all cursor-pointer"
+                onClick={() => navigate("/login")}
+              >
+                Get Started
+              </button>
+            </SignedOut>
+            <SignedIn>
+              <button
+                className="px-8 py-4 rounded-md bg-gradient-to-r from-[#00ffae] to-[#00e0ff] text-[#0e0e10] font-bold text-lg hover:shadow-lg hover:shadow-[#00ffae]/30 transition-all cursor-pointer"
+                onClick={() => navigate("/dashboard")}
+              >
+                Dashboard
+              </button>
+            </SignedIn>
           </div>
         </div>
       </div>

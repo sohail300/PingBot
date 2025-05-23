@@ -1,8 +1,11 @@
 import { Logo } from "./Logo";
 import { NavItem, navItems } from "./NavItem";
 import { LogOut } from "lucide-react";
+import { useClerk } from "@clerk/clerk-react";
 
 export const Sidebar = () => {
+  const { signOut } = useClerk();
+
   return (
     <div className="hidden md:flex flex-col h-screen w-60 bg-[#0e0e10] border-r border-gray-800 fixed left-0 top-0">
       <div className="p-4">
@@ -24,7 +27,7 @@ export const Sidebar = () => {
           </div>
         </div>
         <div className="cursor-pointer">
-          <LogOut color="#b23b3b" />
+          <LogOut color="#b23b3b" onClick={() => signOut()} />
         </div>
       </div>
     </div>

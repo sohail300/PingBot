@@ -8,6 +8,9 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useUser } from "@clerk/clerk-react";
+import Loading from "@/components/Loading";
+import { useNavigate } from "react-router-dom";
 
 // Sample data for demonstration
 const sampleLogs = [
@@ -158,6 +161,17 @@ export default function Logs() {
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
   const [isEndpointDropdownOpen, setIsEndpointDropdownOpen] = useState(false);
   const [selectedEndpoints, setSelectedEndpoints] = useState<string[]>([]);
+
+  const navigate = useNavigate();
+  const { isLoaded, isSignedIn } = useUser();
+
+  if (!isLoaded) {
+    return <Loading />;
+  }
+
+  if (!isSignedIn) {
+    navigate("/login");
+  }
 
   const statusOptions = [
     "All Statuses",

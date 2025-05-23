@@ -3,8 +3,11 @@ import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Logo } from "./Logo";
 import { NavItem, navItems } from "./NavItem";
+import { useClerk } from "@clerk/clerk-react";
 
 export const MobileSidebarNav = () => {
+  const { signOut } = useClerk();
+
   return (
     <div className="md:hidden flex items-center justify-between p-4 bg-[#0e0e10] border-b border-gray-800">
       <Logo />
@@ -39,7 +42,7 @@ export const MobileSidebarNav = () => {
               </div>
 
               <div className="cursor-pointer">
-                <LogOut color="#b23b3b" />
+                <LogOut color="#b23b3b" onClick={() => signOut()} />
               </div>
             </div>
           </div>

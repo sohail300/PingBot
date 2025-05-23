@@ -11,8 +11,22 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useUser } from "@clerk/clerk-react";
+import Loading from "@/components/Loading";
+import { useNavigate } from "react-router-dom";
 
 const AddEndpoint = () => {
+  const navigate = useNavigate();
+  const { isLoaded, isSignedIn } = useUser();
+
+  if (!isLoaded) {
+    return <Loading />;
+  }
+
+  if (!isSignedIn) {
+    navigate("/login");
+  }
+
   return (
     <div className="bg-[#0e0e10] min-h-screen text-white py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-xl mx-auto">
