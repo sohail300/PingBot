@@ -11,9 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import Loading from "@/components/Loading";
 import { useNavigate } from "react-router-dom";
+import { api } from "@/utils/config";
 
 const AddEndpoint = () => {
   const navigate = useNavigate();
@@ -54,11 +55,11 @@ const AddEndpoint = () => {
 const AddEndpointForm = () => {
   const [formData, setFormData] = useState({
     url: "",
-    headers: "",
-    pingInterval: "5",
     emailNotifications: true,
-    isSubmitting: false,
   });
+
+  const { getToken } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -69,27 +70,58 @@ const AddEndpointForm = () => {
     setFormData((prev) => ({ ...prev, emailNotifications: checked }));
   };
 
-  const handleSubmit = () => {
-    setFormData((prev) => ({ ...prev, isSubmitting: true }));
+  const handleSubmit = async () => {
+    try {
+      console.log(formData);
+      setIsSubmitting(true);
+      const token = await getToken();
+      const response = await api.post(
+        "/target/create",
+        {
+          url: formData.url,
+          send_email: formData.emailNotifications,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    // Simulate API call
-    setTimeout(() => {
-      toast("Endpoint Added", {
-        description: "Your new endpoint has been added successfully.",
-        action: {
-          label: "Undo",
-          onClick: () => console.log("Undo"),
+      console.log(response.data);
+
+      if (response.status === 201) {
+        toast("Endpoint Added", {
+          description: "Your new endpoint has been added successfully.",
+          style: {
+            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+            color: "#ffffff",
+            fontSize: "14px",
+            border: "1px solid rgba(16, 185, 129, 0.3)",
+            boxShadow: "0 4px 12px rgba(16, 185, 129, 0.15)",
+          },
+        });
+
+        setFormData({
+          url: "",
+          emailNotifications: true,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast("Failed to Add Endpoint", {
+        description: "Please try again.",
+        style: {
+          background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+          color: "#ffffff",
+          fontSize: "14px",
+          border: "1px solid rgba(239, 68, 68, 0.3)",
+          boxShadow: "0 4px 12px rgba(239, 68, 68, 0.15)",
         },
       });
-
-      setFormData({
-        url: "",
-        headers: "",
-        pingInterval: "5",
-        emailNotifications: true,
-        isSubmitting: false,
-      });
-    }, 1000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -145,10 +177,10 @@ const AddEndpointForm = () => {
         </Button>
         <Button
           onClick={() => handleSubmit()}
-          disabled={formData.isSubmitting}
+          disabled={isSubmitting}
           className="w-full sm:w-auto sm:flex-1 text-black font-medium bg-gradient-to-r from-[#00ffae] to-[#00e0ff] hover:opacity-90 disabled:opacity-50"
         >
-          {formData.isSubmitting ? "Adding..." : "Add Endpoint"}
+          {isSubmitting ? "Adding..." : "Add Endpoint"}
         </Button>
       </CardFooter>
     </Card>
