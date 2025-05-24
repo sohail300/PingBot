@@ -72,3 +72,96 @@ DETAIL:  Failing row contains (user_2xXOAyjCD4sNMh7qv38lEJ332j2, Md Sohail Ansar
 2025-05-24 16:37:28,682 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
 2025-05-24 16:37:28,762 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
 2025-05-24 16:37:28,762 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:04:57,654 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:04:57,813 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:04:57,813 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:05:34,852 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:05:34,931 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:05:34,931 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:09:12,334 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:09:12,433 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:09:45,663 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:09:45,768 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:09:45,769 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:09:47,694 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:09:47,767 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:09:47,768 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:11:27,259 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:11:27,338 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:11:27,340 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:11:41,157 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:11:41,243 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:11:41,246 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:11:50,926 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:11:51,009 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:11:51,009 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:12:43,452 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:12:43,560 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:12:43,560 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:13:59,082 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:13:59,101 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:13:59,103 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:14:51,767 - app_logger - ERROR - Unexpected error: str'State' object has no attribute 'token'
+2025-05-25 02:14:51,773 - app_logger - ERROR - Unexpected error: str'State' object has no attribute 'token'
+2025-05-25 02:14:51,777 - app_logger - ERROR - Unexpected error: str'State' object has no attribute 'token'
+2025-05-25 02:16:29,504 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:16:29,517 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:16:29,517 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:16:39,144 - app_logger - ERROR - Unexpected error: str'State' object has no attribute 'token'
+2025-05-25 02:16:39,149 - app_logger - ERROR - Unexpected error: str'State' object has no attribute 'token'
+2025-05-25 02:16:39,153 - app_logger - ERROR - Unexpected error: str'State' object has no attribute 'token'
+2025-05-25 02:18:14,897 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:18:14,909 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:18:14,909 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:18:22,426 - app_logger - ERROR - Unexpected error: str'State' object has no attribute 'token'
+2025-05-25 02:18:22,431 - app_logger - ERROR - Unexpected error: str'State' object has no attribute 'token'
+2025-05-25 02:18:22,436 - app_logger - ERROR - Unexpected error: str'State' object has no attribute 'token'
+2025-05-25 02:19:08,338 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:19:08,349 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:19:08,351 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:19:52,510 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:19:52,524 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:19:52,524 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:21:42,337 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:21:42,349 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:21:42,349 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:23:50,649 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:23:50,657 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:23:50,657 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:27:29,778 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:27:29,792 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:27:29,792 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:31:50,621 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:31:50,630 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:31:50,633 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:37:05,735 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:37:05,750 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:37:05,751 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:41:52,764 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:41:52,776 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:41:52,776 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:42:12,290 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:42:12,307 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:42:12,308 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:43:59,281 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:43:59,362 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:43:59,363 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:49:10,463 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:49:10,515 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 02:49:10,516 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:04:52,769 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:04:53,158 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:04:53,161 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:19:39,049 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:19:39,436 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:19:39,439 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:20:09,194 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:20:09,567 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:20:09,580 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:20:54,099 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-25 03:28:05,449 - app_logger - ERROR - Error in AuthMiddleware: 1 validation errors:
+  {'type': 'dict_type', 'loc': ('response',), 'msg': 'Input should be a valid dictionary', 'input': None}
+
+2025-05-25 03:29:49,637 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:29:50,015 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:29:50,017 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2

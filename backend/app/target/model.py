@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Boolean, func
-
+from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Boolean, func, UniqueConstraint
 from db import Base
 
 
@@ -14,6 +13,10 @@ class PingTarget(Base):
     is_active = Column(Boolean, default=True, nullable=False)
 
     created_at = Column(DateTime, nullable=False, default=func.now())
+
+    __table_args__ = (
+        UniqueConstraint('user_id', 'url', name='uq_user_url'),
+    )
 
 
 class PingLogs(Base):
