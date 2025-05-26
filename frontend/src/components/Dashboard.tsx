@@ -5,9 +5,11 @@ import { Plus } from "lucide-react";
 import { EndpointList } from "./EndpointList";
 import { RecentAlertsPanel } from "./RecentAlertPanel";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 
 export const DashboardComponent = () => {
   const navigate = useNavigate();
+  const { user } = useUser();
 
   // Mock data for endpoints
   const mockEndpoints = [
@@ -93,7 +95,7 @@ export const DashboardComponent = () => {
     >
       <div className="mb-8">
         <h2 className="text-3xl font-bold my-2 bg-gradient-to-r from-[#00ffae] to-[#00e0ff] bg-clip-text text-transparent">
-          Welcome back, Alex
+          Welcome back, {user?.fullName}
         </h2>
         <p className="text-gray-400">
           Monitor your endpoints and keep everything running smoothly.

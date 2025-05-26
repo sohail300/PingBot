@@ -27,16 +27,8 @@ export const DashboardStats = () => {
         variants={itemVariants}
         className="bg-[#1a1a1c] p-5 rounded-xl border border-gray-800 shadow-lg"
       >
-        <p className="text-gray-400 text-sm mb-1">Overall Uptime</p>
+        <p className="text-gray-400 text-sm mb-1">Overall Uptime (24 hrs)</p>
         <h3 className="text-white text-2xl font-bold">97.1%</h3>
-      </motion.div>
-
-      <motion.div
-        variants={itemVariants}
-        className="bg-[#1a1a1c] p-5 rounded-xl border border-gray-800 shadow-lg"
-      >
-        <p className="text-gray-400 text-sm mb-1">Total Pings (24h)</p>
-        <h3 className="text-white text-2xl font-bold">768</h3>
       </motion.div>
 
       <motion.div

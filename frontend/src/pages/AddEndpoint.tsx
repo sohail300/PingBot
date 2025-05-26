@@ -10,11 +10,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import Loading from "@/components/Loading";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/utils/config";
+import { useMutation } from "@tanstack/react-query";
+import { displayErrorToast, displaySuccessToast } from "@/utils/toasts";
 
 const AddEndpoint = () => {
   const navigate = useNavigate();
@@ -59,7 +60,6 @@ const AddEndpointForm = () => {
   });
 
   const { getToken } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -70,59 +70,40 @@ const AddEndpointForm = () => {
     setFormData((prev) => ({ ...prev, emailNotifications: checked }));
   };
 
-  const handleSubmit = async () => {
-    try {
-      console.log(formData);
-      setIsSubmitting(true);
-      const token = await getToken();
-      const response = await api.post(
-        "/target/create",
-        {
-          url: formData.url,
-          send_email: formData.emailNotifications,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log(response.data);
-
-      if (response.status === 201) {
-        toast("Endpoint Added", {
-          description: "Your new endpoint has been added successfully.",
-          style: {
-            background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-            color: "#ffffff",
-            fontSize: "14px",
-            border: "1px solid rgba(16, 185, 129, 0.3)",
-            boxShadow: "0 4px 12px rgba(16, 185, 129, 0.15)",
-          },
-        });
-
-        setFormData({
-          url: "",
-          emailNotifications: true,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      toast("Failed to Add Endpoint", {
+  const { isPending, mutate } = useMutation({
+    mutationFn: handleAddNewEndpoint,
+    onSuccess: () =>
+      displaySuccessToast({
+        title: "Endpoint Added",
+        description: "Your new endpoint has been added successfully.",
+      }),
+    onError: () =>
+      displayErrorToast({
+        title: "Failed to Add Endpoint",
         description: "Please try again.",
-        style: {
-          background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-          color: "#ffffff",
-          fontSize: "14px",
-          border: "1px solid rgba(239, 68, 68, 0.3)",
-          boxShadow: "0 4px 12px rgba(239, 68, 68, 0.15)",
+      }),
+  });
+
+  async function handleAddNewEndpoint(formData: {
+    url: string;
+    emailNotifications: boolean;
+  }) {
+    const token = await getToken();
+    const response = await api.post(
+      "/target/create",
+      {
+        url: formData.url,
+        send_email: formData.emailNotifications,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+      }
+    );
+
+    return response.data;
+  }
 
   return (
     <Card className="bg-[#1a1a1c] border-0 shadow-lg">
@@ -171,16 +152,16 @@ const AddEndpointForm = () => {
         <Button
           type="button"
           variant="outline"
-          className="w-full sm:w-auto sm:flex-1 bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
+          className="w-full sm:w-auto sm:flex-1 bg-transparent border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white cursor-pointer"
         >
           Cancel
         </Button>
         <Button
-          onClick={() => handleSubmit()}
-          disabled={isSubmitting}
-          className="w-full sm:w-auto sm:flex-1 text-black font-medium bg-gradient-to-r from-[#00ffae] to-[#00e0ff] hover:opacity-90 disabled:opacity-50"
+          onClick={() => formData.url.trim() !== "" && mutate(formData)}
+          disabled={isPending}
+          className="w-full sm:w-auto sm:flex-1 text-black font-medium bg-gradient-to-r from-[#00ffae] to-[#00e0ff] hover:opacity-90 disabled:opacity-50 cursor-pointer"
         >
-          {isSubmitting ? "Adding..." : "Add Endpoint"}
+          {isPending ? "Adding..." : "Add Endpoint"}
         </Button>
       </CardFooter>
     </Card>

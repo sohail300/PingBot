@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { itemVariants } from "./DashboardCards";
-import { ExternalLink, Clock } from "lucide-react";
+import { ExternalLink, Trash2 } from "lucide-react";
 import { Badge } from "./ui/badge";
 
 // Define container animation variants
@@ -107,12 +107,6 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
           <StatusBadge status={endpoint.status} />
         </div>
 
-        {/* Last Ping Info */}
-        <div className="flex items-center text-sm text-gray-400">
-          <Clock size={14} className="mr-2" />
-          Last ping: {endpoint.lastPing}
-        </div>
-
         {/* Controls Section */}
         <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-800">
           <div className="flex items-center justify-between p-2 bg-gray-800/30 rounded-lg">
@@ -177,6 +171,10 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
               24h Uptime: {endpoint.uptime}%
             </span>
           </div>
+
+          <span>
+            <Trash2 color="#c53030" className="cursor-pointer" />
+          </span>
         </div>
       </div>
     </motion.div>
