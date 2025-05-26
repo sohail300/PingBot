@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Enum, DateTime
+from sqlalchemy.orm import relationship
 
 from db import Base
 
@@ -25,3 +26,6 @@ class User(Base):
     role = Column(user_role_enum, default=UserRoleEnum.User, nullable=False)
 
     created_at = Column(DateTime, nullable=False)
+
+    emails = relationship("EmailsSent", back_populates="user")
+    targets = relationship("PingTarget", back_populates="user")

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Boolean, func
+from sqlalchemy.orm import relationship
 
 from db import Base
 
@@ -13,3 +14,6 @@ class EmailsSent(Base):
     body = Column(String, nullable=False)
 
     created_at = Column(DateTime, nullable=False, default=func.now())
+
+    user = relationship("User", back_populates="emails")
+    target = relationship("PingTarget", back_populates="emails")

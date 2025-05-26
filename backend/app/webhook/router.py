@@ -13,5 +13,4 @@ async def create_user(request: Request, payload: Dict, db: db_dependency):
     """
     Create a new user via webhook.
     """
-    print()
     return await WebhookService.create_user(request, payload, db)

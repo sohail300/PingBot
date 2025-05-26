@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
 from fastapi.params import Depends
 from starlette.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
@@ -28,6 +29,30 @@ app.add_middleware(CORSMiddleware,
 app.add_middleware(AuthMiddleware)
 
 
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="FastAPI application",
+        version="1.0.0",
+        description="JWT Authentication and Authorization",
+        routes=app.routes,
+    )
+    openapi_schema["components"]["securitySchemes"] = {
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
+    openapi_schema["security"] = [{"BearerAuth": []}]
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
+
+
 @app.get('/')
 async def root():
     return {'message': 'Healthy Server!'}
@@ -37,10 +62,11 @@ async def root():
 async def test_route(user: get_current_user_dependency):
     if user:
         print(user.id)
+        return {'user_id': user.id}
+
     else:
         print("No authenticated user")
-
-    return {'message': 'Healthy Server!'}
+        return {'user_id': None}
 
 
 app.include_router(webhook_router)

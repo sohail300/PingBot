@@ -165,3 +165,154 @@ DETAIL:  Failing row contains (user_2xXOAyjCD4sNMh7qv38lEJ332j2, Md Sohail Ansar
 2025-05-25 03:29:49,637 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
 2025-05-25 03:29:50,015 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
 2025-05-25 03:29:50,017 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:46:24,021 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:46:24,390 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 03:46:24,392 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 23:48:33,048 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 23:48:33,741 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-25 23:48:33,744 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 00:58:00,745 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 00:58:01,565 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 00:58:01,569 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 00:59:08,732 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 00:59:08,735 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 00:59:09,866 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 00:59:09,866 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 00:59:14,061 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 00:59:14,061 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:00:00,196 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:00:00,197 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:00:31,203 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:00:31,206 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:14:27,045 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:14:27,045 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:16:00,374 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:16:00,374 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:16:01,075 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:16:01,076 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:16:02,077 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:16:02,077 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:16:19,469 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:16:19,471 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:16:20,801 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:16:20,802 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:17:02,932 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:17:03,449 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:17:03,449 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:17:57,697 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:17:57,697 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:18:53,176 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:18:53,540 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:18:53,542 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:19:14,751 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:19:15,122 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:19:15,126 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:19:25,676 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:19:26,244 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:19:26,249 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:19:28,560 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:19:28,560 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 01:24:02,230 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:24:02,638 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:24:02,638 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 01:24:18,984 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 01:24:18,986 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 13:22:00,249 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:22:00,606 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:22:00,606 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:44:21,051 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:44:21,111 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:48:55,459 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:48:55,511 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:49:16,581 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:49:16,640 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:49:23,518 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:49:23,557 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:49:34,482 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:49:34,524 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:50:05,742 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:50:05,793 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:50:42,534 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:50:42,574 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:51:03,613 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:51:03,658 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:51:13,734 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:51:42,344 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:52:46,814 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:53:07,133 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:53:19,364 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:53:33,825 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:53:49,067 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:54:05,908 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:56:13,917 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 13:56:25,907 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:52:19,713 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:53:52,672 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:54:22,762 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:55:35,570 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:56:44,023 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:56:47,902 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:58:17,609 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:58:23,235 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:58:29,868 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:59:09,046 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:59:24,705 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 14:59:35,965 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:00:14,420 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:00:16,812 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:00:21,740 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:01:13,138 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:01:28,174 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:02:56,128 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:02:56,845 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:02:56,845 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:03:00,641 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:03:00,994 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:03:00,999 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 15:03:42,755 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 15:04:15,232 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 15:04:21,376 - app_logger - ERROR - Error in get_current_user: Not enough segments
+2025-05-26 15:04:21,377 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 15:05:02,272 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 15:05:02,272 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 21:24:01,486 - app_logger - ERROR - Error in get_current_user: Signature has expired.
+2025-05-26 21:24:57,752 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:24:58,149 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:24:58,151 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:25:00,530 - app_logger - ERROR - Error in get_current_user: Signature has expired.
+2025-05-26 21:26:31,833 - app_logger - ERROR - Error in get_current_user: Signature has expired.
+2025-05-26 21:35:05,771 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 21:35:08,008 - app_logger - ERROR - Error in get_current_user: The token is not yet valid (nbf)
+2025-05-26 21:36:03,772 - app_logger - ERROR - Error in get_current_user: Mapper 'Mapper[PingTarget(ping_targets)]' has no property 'user'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
+2025-05-26 21:36:10,291 - app_logger - ERROR - Error in get_current_user: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[User(users)]'. Original exception was: Mapper 'Mapper[PingTarget(ping_targets)]' has no property 'user'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
+2025-05-26 21:37:01,908 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:37:02,437 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:37:02,439 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:37:05,665 - app_logger - ERROR - Error in get_current_user: Signature has expired.
+2025-05-26 21:36:34,298 - app_logger - ERROR - Error in get_current_user: Signature has expired.
+2025-05-26 21:36:36,610 - app_logger - ERROR - Error in get_current_user: Signature has expired.
+2025-05-26 21:42:14,829 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:42:15,696 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:42:15,703 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:57:59,106 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:57:59,617 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:57:59,620 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 21:58:11,617 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 21:58:35,250 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 21:58:46,984 - app_logger - ERROR - Unexpected error: 401: User not authenticated
+2025-05-26 22:06:24,879 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:06:25,240 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:06:25,242 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:06:30,020 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:06:30,427 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:06:30,431 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:07:13,280 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:07:13,647 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:07:13,650 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:07:34,598 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:07:35,142 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:07:35,146 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:07:44,810 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:07:49,054 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:07:49,404 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
+2025-05-26 22:07:49,406 - dotenv.main - WARNING - Python-dotenv could not parse statement starting at line 2
