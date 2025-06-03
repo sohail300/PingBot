@@ -1,8 +1,28 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { itemVariants } from "./DashboardCards";
-import { ExternalLink, Trash2 } from "lucide-react";
+import { ExternalLink, Loader2, Trash2 } from "lucide-react";
 import { Badge } from "./ui/badge";
+import { api } from "@/utils/config";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@clerk/clerk-react";
+
+interface UptimeInfo {
+  uptime_percentage: number;
+  total_checks: number;
+  successful_checks: number;
+  period_hours: number;
+}
+
+interface Endpoint {
+  id: number;
+  name: string;
+  url: string;
+  send_email: boolean;
+  is_down: boolean;
+  is_active: boolean;
+  uptime_info: UptimeInfo;
+}
 
 // Define container animation variants
 export const containerVariants = {
@@ -16,21 +36,45 @@ export const containerVariants = {
   },
 };
 
-// Endpoint List component
-type Endpoint = {
-  id: string | number;
-  url: string;
-  active: boolean;
-  status: string;
-  lastPing: string;
-  uptime: number;
-};
+export const EndpointList = () => {
+  const { getToken } = useAuth();
 
-interface EndpointListProps {
-  endpoints: Endpoint[];
-}
+  const { isPending, error, data } = useQuery<Endpoint[]>({
+    queryKey: ["endpointsList"],
+    queryFn: getEndpointsList,
+  });
 
-export const EndpointList = ({ endpoints }: EndpointListProps) => {
+  async function getEndpointsList() {
+    try {
+      const token = await getToken({ template: "pingbot" });
+
+      const response = await api.get("/target/list", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      throw error;
+    }
+  }
+
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center h-32">
+        <Loader2 className="w-8 h-8 animate-spin text-[#00ffae]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error("Error loading dashboard stats:", error);
+    return <div className="text-red-500">Error loading dashboard stats</div>;
+  }
+
   return (
     <motion.div
       variants={containerVariants}
@@ -38,7 +82,7 @@ export const EndpointList = ({ endpoints }: EndpointListProps) => {
       animate="visible"
       className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8"
     >
-      {endpoints.map((endpoint) => (
+      {data.map((endpoint) => (
         <EndpointCard key={endpoint.id} endpoint={endpoint} />
       ))}
     </motion.div>
@@ -47,8 +91,8 @@ export const EndpointList = ({ endpoints }: EndpointListProps) => {
 
 // Endpoint Card component
 const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
-  const [isActive, setIsActive] = useState(endpoint.active);
-  const [sendEmail, setSendEmail] = useState(false);
+  const [isActive, setIsActive] = useState(endpoint.is_active);
+  const [sendEmail, setSendEmail] = useState(endpoint.send_email);
 
   const toggleActive = () => {
     setIsActive(!isActive);
@@ -92,19 +136,24 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
         {/* Header Section */}
         <div className="flex items-center justify-between relative">
           <div className="flex items-center space-x-2 w-4/5">
-            <h3 className="text-white font-medium truncate max-w-xs">
-              {endpoint.url}
-            </h3>
-            <a
-              href={endpoint.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-400 hover:text-[#00ffae]"
-            >
-              <ExternalLink size={14} />
-            </a>
+            <div>
+              <h3 className="text-white font-medium truncate max-w-xs">
+                {endpoint.name}
+              </h3>
+              <div className="flex items-center space-x-2">
+                <p className="text-gray-400 text-sm">{endpoint.url}</p>
+                <a
+                  href={endpoint.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-[#00ffae]"
+                >
+                  <ExternalLink size={14} />
+                </a>
+              </div>
+            </div>
           </div>
-          <StatusBadge status={endpoint.status} />
+          <StatusBadge status={endpoint.is_down} />
         </div>
 
         {/* Controls Section */}
@@ -145,9 +194,9 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
                 cy="12"
                 r="10"
                 stroke={
-                  endpoint.uptime > 95
+                  endpoint.uptime_info.uptime_percentage > 95
                     ? "#00ffae"
-                    : endpoint.uptime > 90
+                    : endpoint.uptime_info.uptime_percentage > 90
                     ? "orange"
                     : "red"
                 }
@@ -156,19 +205,21 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
               <path
                 d={`M 12 12 L 12 5`}
                 stroke={
-                  endpoint.uptime > 95
+                  endpoint.uptime_info.uptime_percentage > 95
                     ? "#00ffae"
-                    : endpoint.uptime > 90
+                    : endpoint.uptime_info.uptime_percentage > 90
                     ? "orange"
                     : "red"
                 }
                 strokeWidth="2"
                 strokeLinecap="round"
-                transform={`rotate(${endpoint.uptime * 3.6} 12 12)`}
+                transform={`rotate(${
+                  endpoint.uptime_info.uptime_percentage * 3.6
+                } 12 12)`}
               />
             </svg>
             <span className="text-sm text-gray-300">
-              24h Uptime: {endpoint.uptime}%
+              24h Uptime: {endpoint.uptime_info.uptime_percentage}%
             </span>
           </div>
 
@@ -182,18 +233,14 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
 };
 
 // Status Badge component
-const StatusBadge = ({ status }: { status: string }) => {
-  let color = status === "200 OK" ? "bg-green-500" : "bg-red-500";
-
-  if (status === "Slow") {
-    color = "bg-yellow-500";
-  }
+const StatusBadge = ({ status }: { status: boolean }) => {
+  const color = status === true ? "bg-green-500" : "bg-red-500";
 
   return (
     <Badge
       className={`${color} text-white text-xs px-2 py-1 rounded-full absolute top-0 right-0`}
     >
-      {status}
+      {status ? "Up" : "Down"}
     </Badge>
   );
 };

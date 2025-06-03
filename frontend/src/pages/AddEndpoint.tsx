@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "@/utils/config";
 import { useMutation } from "@tanstack/react-query";
 import { displayErrorToast, displaySuccessToast } from "@/utils/toasts";
+import axios from "axios";
 
 const AddEndpoint = () => {
   const navigate = useNavigate();
@@ -56,6 +57,7 @@ const AddEndpoint = () => {
 const AddEndpointForm = () => {
   const [formData, setFormData] = useState({
     url: "",
+    name: "",
     emailNotifications: true,
   });
 
@@ -77,32 +79,47 @@ const AddEndpointForm = () => {
         title: "Endpoint Added",
         description: "Your new endpoint has been added successfully.",
       }),
-    onError: () =>
+    onError: (error: string) =>
       displayErrorToast({
         title: "Failed to Add Endpoint",
-        description: "Please try again.",
+        description: error,
       }),
   });
 
   async function handleAddNewEndpoint(formData: {
     url: string;
+    name: string;
     emailNotifications: boolean;
   }) {
-    const token = await getToken();
-    const response = await api.post(
-      "/target/create",
-      {
-        url: formData.url,
-        send_email: formData.emailNotifications,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    try {
+      console.log(formData);
+      const token = await getToken({ template: "pingbot" });
 
-    return response.data;
+      const response = await api.post(
+        "/target/create",
+        {
+          url: formData.url,
+          name: formData.name,
+          send_email: formData.emailNotifications,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.detail);
+        throw error.response.data.detail;
+      } else {
+        console.log("An unexpected error occurred:", error);
+        throw "An unexpected error occurred.";
+      }
+    }
   }
 
   return (
@@ -113,6 +130,21 @@ const AddEndpointForm = () => {
       <CardContent>
         <div className="space-y-6">
           <div className="space-y-2">
+            <Label htmlFor="name" className="text-sm text-gray-300">
+              Endpoint Name
+            </Label>
+            <Input
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="API Endpoint"
+              className="bg-[#252529] border-gray-700 text-white focus:border-[#00ffae] focus:ring-1 focus:ring-[#00ffae]"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="url" className="text-sm text-gray-300">
               Endpoint URL
             </Label>
@@ -121,7 +153,7 @@ const AddEndpointForm = () => {
               name="url"
               value={formData.url}
               onChange={handleChange}
-              placeholder="https://api.example.com/v1/status"
+              placeholder="https://api.example.com/v1/health"
               className="bg-[#252529] border-gray-700 text-white focus:border-[#00ffae] focus:ring-1 focus:ring-[#00ffae]"
               required
             />
@@ -157,7 +189,11 @@ const AddEndpointForm = () => {
           Cancel
         </Button>
         <Button
-          onClick={() => formData.url.trim() !== "" && mutate(formData)}
+          onClick={() =>
+            formData.url.trim() !== "" &&
+            formData.name.trim() !== "" &&
+            mutate(formData)
+          }
           disabled={isPending}
           className="w-full sm:w-auto sm:flex-1 text-black font-medium bg-gradient-to-r from-[#00ffae] to-[#00e0ff] hover:opacity-90 disabled:opacity-50 cursor-pointer"
         >

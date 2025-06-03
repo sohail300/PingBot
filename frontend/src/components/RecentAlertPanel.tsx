@@ -1,22 +1,64 @@
 import { Card, CardHeader } from "@/components/ui/card";
-import { Bell } from "lucide-react";
+import { Bell, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { containerVariants } from "./EndpointList";
 import { itemVariants } from "./DashboardCards";
 import { Badge } from "./ui/badge";
+import { useAuth } from "@clerk/clerk-react";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/utils/config";
 
-type Alert = {
-  id: string | number;
+interface Target {
+  id: number;
+  name: string;
   url: string;
-  date: string;
-  time: string;
-};
-
-interface RecentAlertsPanelProps {
-  alerts: Alert[];
 }
 
-export const RecentAlertsPanel = ({ alerts }: RecentAlertsPanelProps) => {
+interface Alert {
+  id: number;
+  target: Target;
+  created_at: string;
+}
+
+export const RecentAlertsPanel = () => {
+  const { getToken } = useAuth();
+
+  const { isPending, error, data } = useQuery<Alert[]>({
+    queryKey: ["recentAlerts"],
+    queryFn: getRecentAlerts,
+  });
+
+  async function getRecentAlerts() {
+    try {
+      const token = await getToken({ template: "pingbot" });
+
+      const response = await api.get("/email/list", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      throw error;
+    }
+  }
+
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center h-32">
+        <Loader2 className="w-8 h-8 animate-spin text-[#00ffae]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error("Error loading dashboard stats:", error);
+    return <div className="text-red-500">Error loading dashboard stats</div>;
+  }
+
   return (
     <Card className="bg-[#1a1a1c] border-gray-800 shadow-lg rounded-xl overflow-hidden">
       <CardHeader className="px-4 pb-4 flex items-center justify-between text-white font-medium border-b border-gray-800">
@@ -25,7 +67,7 @@ export const RecentAlertsPanel = ({ alerts }: RecentAlertsPanelProps) => {
           Recent Alerts
         </h3>
         <Badge className="bg-red-500/20 text-red-400 border-red-500">
-          4 Incidents
+          {data.length} Incidents
         </Badge>
       </CardHeader>
 
@@ -35,7 +77,7 @@ export const RecentAlertsPanel = ({ alerts }: RecentAlertsPanelProps) => {
         animate="visible"
         className="max-h-[300px] overflow-y-auto"
       >
-        {alerts.map((alert) => (
+        {data.map((alert) => (
           <AlertItem key={alert.id} alert={alert} />
         ))}
       </motion.div>
@@ -45,18 +87,44 @@ export const RecentAlertsPanel = ({ alerts }: RecentAlertsPanelProps) => {
 
 // Alert Item component
 const AlertItem = ({ alert }: { alert: Alert }) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
   return (
     <motion.div
       variants={itemVariants}
-      className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-[#1a1a1c] transition-colors"
+      className="flex items-center justify-between py-2 px-4 rounded-lg hover:bg-[#1a1a1c] transition-colors"
     >
-      <div className="flex items-center space-x-3">
-        <div className={`h-2 w-2 rounded-full bg-red-500`}></div>
-        <div>
-          <p className="text-white text-sm">{alert.url}</p>
-          <p className="text-xs text-gray-400">
-            {alert.date} at {alert.time}
-          </p>
+      <div className="flex items-start space-x-4 p-2 hover:bg-gray-800/30 rounded-lg transition-colors w-full">
+        <div className="flex-shrink-0 mt-1">
+          <div
+            className={`h-3 w-3 rounded-full bg-red-500 animate-pulse`}
+          ></div>
+        </div>
+        <div className="flex-grow min-w-0">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex-grow min-w-0">
+                <h3 className="text-white font-medium truncate">
+                  {alert.target.name}
+                </h3>
+                <p className="text-sm text-gray-300 truncate">
+                  {alert.target.url}
+                </p>
+              </div>
+              <span className="text-xs text-gray-400 whitespace-nowrap">
+                {formatDate(alert.created_at)}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </motion.div>

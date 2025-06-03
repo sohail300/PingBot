@@ -11,82 +11,6 @@ export const DashboardComponent = () => {
   const navigate = useNavigate();
   const { user } = useUser();
 
-  // Mock data for endpoints
-  const mockEndpoints = [
-    {
-      id: 1,
-      url: "https://api.example.com/users",
-      status: "200 OK",
-      uptime: 99.8,
-      lastPing: "2 minutes ago",
-      active: true,
-    },
-    {
-      id: 2,
-      url: "https://api.example.com/products",
-      status: "200 OK",
-      uptime: 98.5,
-      lastPing: "5 minutes ago",
-      active: true,
-    },
-    {
-      id: 3,
-      url: "https://api.example.com/orders",
-      status: "Down",
-      uptime: 87.2,
-      lastPing: "12 minutes ago",
-      active: true,
-    },
-    {
-      id: 4,
-      url: "https://api.yourservice.io/webhooks",
-      status: "200 OK",
-      uptime: 99.9,
-      lastPing: "1 minute ago",
-      active: true,
-    },
-    {
-      id: 5,
-      url: "https://auth.yourapp.com/login",
-      status: "200 OK",
-      uptime: 100,
-      lastPing: "Just now",
-      active: true,
-    },
-  ];
-
-  // Mock data for alerts
-  const mockAlerts = [
-    {
-      id: 1,
-      url: "api.example.com/orders",
-      status: "Down",
-      time: "3:42 PM",
-      date: "Today",
-    },
-    {
-      id: 2,
-      url: "api.example.com/users",
-      status: "Slow",
-      time: "1:17 PM",
-      date: "Today",
-    },
-    {
-      id: 3,
-      url: "auth.yourapp.com/login",
-      status: "Down",
-      time: "11:05 AM",
-      date: "Yesterday",
-    },
-    {
-      id: 4,
-      url: "api.yourservice.io/webhooks",
-      status: "Down",
-      time: "6:32 PM",
-      date: "May 17",
-    },
-  ];
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -117,10 +41,10 @@ export const DashboardComponent = () => {
         </Button>
       </div>
 
-      <EndpointList endpoints={mockEndpoints} />
+      <EndpointList />
 
       <div className="my-8">
-        <RecentAlertsPanel alerts={mockAlerts} />
+        <RecentAlertsPanel />
       </div>
     </motion.div>
   );
