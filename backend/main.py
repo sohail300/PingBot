@@ -1,20 +1,30 @@
 import os
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
-from fastapi.params import Depends
 from starlette.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.email.router import email_router
 from app.target.router import target_router
 from app.webhook.router import webhook_router
 from db import engine, Base
-from middleware.auth import AuthMiddleware, get_current_user, get_current_user_dependency
+from auth import get_current_user_dependency
+from utils.scheduler import scheduler
 
 load_dotenv()
 
 Base.metadata.create_all(bind=engine)
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    scheduler.start()
+    yield
+
+
 app = FastAPI(
+    lifespan=lifespan,
     title='Pingbot',
     description='Prevent cold starts, monitor uptime, and get instant notifications when your services go down.',
     version='0.1.0',
@@ -25,8 +35,6 @@ app.add_middleware(CORSMiddleware,
                    allow_credentials=True,
                    allow_methods=["*"],
                    allow_headers=["*"], )
-
-app.add_middleware(AuthMiddleware)
 
 
 def custom_openapi():
@@ -61,8 +69,8 @@ async def root():
 @app.get('/test')
 async def test_route(user: get_current_user_dependency):
     if user:
-        print(user.id)
-        return {'user_id': user.id}
+        print(user)
+        return {'user': user}
 
     else:
         print("No authenticated user")

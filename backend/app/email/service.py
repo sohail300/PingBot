@@ -2,10 +2,9 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from starlette import status
 
-from app.email.model import EmailsSent
 from app.email.schema import EmailAlertsResponse
-from app.target.model import PingTarget
 from logger import logger
+from models import PingTarget
 
 
 class EmailService:
@@ -63,6 +62,8 @@ class EmailService:
 
             # Toggle the email alert setting
             target.send_email = not target.send_email
+
+            db.commit()
 
             return {
                 "message": f"Email alert for target {target_id} {'enabled' if target.send_email else 'disabled'} successfully."

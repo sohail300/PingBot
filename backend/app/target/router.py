@@ -6,7 +6,7 @@ from starlette import status
 from app.target.schema import CreateTarget, TargetListResponse, TargetLogsResponse
 from app.target.service import TargetService
 from db import db_dependency
-from middleware.auth import get_current_user_dependency
+from auth import get_current_user_dependency
 
 target_router = APIRouter(prefix='/api/target', tags=['target'])
 

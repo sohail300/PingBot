@@ -1,15 +1,14 @@
 from datetime import datetime, timedelta
-from operator import and_
+from sqlalchemy import and_
 
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from starlette import status
 
-from app.target.model import PingTarget, PingLogs
 from app.target.schema import CreateTarget, TargetListResponse, TargetLogsResponse
-from app.webhook.model import User
 from logger import logger
+from models import User, PingTarget, PingLogs
 
 
 class TargetService:
@@ -323,13 +322,15 @@ class TargetService:
                 PingTarget.user_id == user.id
             ).first()
 
+            print(f"Target found: {target}")
+
             if not target:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="Target not found"
                 )
 
-            return [TargetLogsResponse.model_dump(log) for log in target.logs]
+            return [TargetLogsResponse.model_validate(log) for log in target.logs]
 
         except SQLAlchemyError as e:
             print(f"Database error: {e}")

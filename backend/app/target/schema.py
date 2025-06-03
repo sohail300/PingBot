@@ -1,15 +1,18 @@
+from datetime import datetime
 from typing import Dict
 
 from pydantic import BaseModel
 
 
 class CreateTarget(BaseModel):
+    name: str
     url: str
     send_email: bool
 
 
 class TargetUrlResponse(BaseModel):
     id: int
+    name: str
     url: str
 
     class Config:
@@ -18,6 +21,7 @@ class TargetUrlResponse(BaseModel):
 
 class TargetListResponse(BaseModel):
     id: int
+    name: str
     url: str
     send_email: bool
     is_down: bool
@@ -33,7 +37,7 @@ class TargetLogsResponse(BaseModel):
     target: TargetUrlResponse
     status_code: int
     response_time: int
-    created_at: str
+    created_at: datetime
 
     class Config:
         from_attributes = True

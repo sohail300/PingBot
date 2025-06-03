@@ -1,13 +1,10 @@
 from typing import List, Dict
-
 from fastapi import APIRouter
-from sqlalchemy.orm import Session
 from starlette import status
-
 from app.email.schema import EmailAlertsResponse
 from app.email.service import EmailService
 from db import db_dependency
-from middleware.auth import get_current_user_dependency
+from auth import get_current_user_dependency
 
 email_router = APIRouter(prefix='/api/email', tags=['email'])
 

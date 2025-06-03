@@ -8,10 +8,10 @@ from sqlalchemy.orm import Session
 from starlette import status
 from dotenv import load_dotenv
 
-from app.webhook.model import User
 from svix.webhooks import Webhook, WebhookVerificationError
 
 from logger import logger
+from models import User
 
 load_dotenv()
 
