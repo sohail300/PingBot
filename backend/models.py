@@ -36,7 +36,11 @@ class EmailsSent(Base):
     __tablename__ = "emails_sent"
 
     id = Column(Integer, primary_key=True)
-    target_id = Column(Integer, ForeignKey('ping_targets.id'), nullable=False)
+    target_id = Column(
+        Integer,
+        ForeignKey('ping_targets.id', ondelete="SET NULL"),
+        nullable=True  # Make this nullable to allow SET NULL
+    )
     user_id = Column(String, ForeignKey('users.id'), nullable=False)
     subject = Column(String(255), nullable=False)
     body = Column(String, nullable=False)
@@ -52,7 +56,7 @@ class PingTarget(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(String, ForeignKey('users.id'), nullable=False)
-    name = Column(String, nullable=True)
+    name = Column(String, nullable=False)
     url = Column(String(255), nullable=False)
     send_email = Column(Boolean, nullable=False)
     is_down = Column(Boolean, default=False, nullable=False)
@@ -64,8 +68,8 @@ class PingTarget(Base):
         UniqueConstraint('user_id', 'url', name='uq_user_url'),
     )
 
-    emails = relationship("EmailsSent", back_populates="target")
-    logs = relationship("PingLogs", back_populates="target")
+    emails = relationship("EmailsSent", back_populates="target", passive_deletes=True)
+    logs = relationship("PingLogs", back_populates="target", cascade="all, delete-orphan")
     user = relationship("User", back_populates="targets")
 
 

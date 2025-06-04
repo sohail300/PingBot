@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from sqlalchemy import and_
 
 from fastapi import HTTPException
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlalchemy.orm import Session
 from starlette import status
 
@@ -33,10 +33,25 @@ class TargetService:
             db.commit()
             db.refresh(target)
 
-            print(f"Target created successfully: {target.id}")
             return {
                 "message": f"Target created successfully: {target.id}"
             }
+
+        except IntegrityError as e:
+            db.rollback()
+            error_str = str(e.orig).lower()
+            if 'uq_user_url' in error_str or 'unique constraint' in error_str:
+                logger.error(f"Duplicate URL error for user {user.id}: {details.url}")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="This Endpoint URL already exists for your account"
+                )
+            else:
+                logger.error(f"Database integrity error: {str(e)}")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Data integrity error occurred"
+                )
 
         except SQLAlchemyError as e:
             print(f"Database error: {e}")

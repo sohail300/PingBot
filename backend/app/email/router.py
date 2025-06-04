@@ -17,7 +17,7 @@ def get_email_alerts(user: get_current_user_dependency, db: db_dependency):
     return EmailService.get_email_alerts(user, db)
 
 
-@email_router.get('/toggle', response_model=Dict, status_code=status.HTTP_201_CREATED)
+@email_router.put('/toggle', response_model=Dict, status_code=status.HTTP_201_CREATED)
 def toggle_email_alert(target_id: int, user: get_current_user_dependency, db: db_dependency):
     """
     Retrieve email settings for the authenticated user.
