@@ -56,7 +56,7 @@ export const RecentAlertsPanel = () => {
 
   if (error) {
     console.error("Error loading dashboard stats:", error);
-    return <div className="text-red-500">Error loading dashboard stats</div>;
+    return <div className="text-red-500">Error Loading Recent Alerts</div>;
   }
 
   return (

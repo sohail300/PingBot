@@ -52,7 +52,7 @@ export const DashboardStats = () => {
 
   if (error) {
     console.error("Error loading dashboard stats:", error);
-    return <div className="text-red-500">Error loading dashboard stats</div>;
+    return <div className="text-red-500">Error Loading Dashboard Stats</div>;
   }
 
   return (

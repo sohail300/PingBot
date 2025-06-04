@@ -14,7 +14,7 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import Loading from "@/components/Loading";
 import { useNavigate } from "react-router-dom";
 import { api } from "@/utils/config";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { displayErrorToast, displaySuccessToast } from "@/utils/toasts";
 import axios from "axios";
 
@@ -55,6 +55,8 @@ const AddEndpoint = () => {
 };
 
 const AddEndpointForm = () => {
+  const queryClient = useQueryClient();
+
   const [formData, setFormData] = useState({
     url: "",
     name: "",
@@ -74,11 +76,20 @@ const AddEndpointForm = () => {
 
   const { isPending, mutate } = useMutation({
     mutationFn: handleAddNewEndpoint,
-    onSuccess: () =>
+    onSuccess: () => {
       displaySuccessToast({
         title: "Endpoint Added",
         description: "Your new endpoint has been added successfully.",
-      }),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["endpointsList"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["dashboardStats"],
+      });
+    },
     onError: (error: string) =>
       displayErrorToast({
         title: "Failed to Add Endpoint",

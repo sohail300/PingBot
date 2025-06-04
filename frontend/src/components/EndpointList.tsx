@@ -4,8 +4,16 @@ import { itemVariants } from "./DashboardCards";
 import { ExternalLink, Loader2, Trash2 } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { api } from "@/utils/config";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@clerk/clerk-react";
+import { displayErrorToast } from "@/utils/toasts";
+import axios from "axios";
+import { displaySuccessToast } from "@/utils/toasts";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface UptimeInfo {
   uptime_percentage: number;
@@ -72,7 +80,7 @@ export const EndpointList = () => {
 
   if (error) {
     console.error("Error loading dashboard stats:", error);
-    return <div className="text-red-500">Error loading dashboard stats</div>;
+    return <div className="text-red-500">Error Loading Endpoints List</div>;
   }
 
   return (
@@ -93,14 +101,146 @@ export const EndpointList = () => {
 const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
   const [isActive, setIsActive] = useState(endpoint.is_active);
   const [sendEmail, setSendEmail] = useState(endpoint.send_email);
+  const { getToken } = useAuth();
 
-  const toggleActive = () => {
-    setIsActive(!isActive);
+  const queryClient = useQueryClient();
+
+  const toggleEmailFn = async (target_id: number) => {
+    const token = await getToken({ template: "pingbot" });
+    console.log(token);
+    try {
+      const response = await api.put(
+        `/email/toggle?target_id=${target_id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response);
+      if (response.data) {
+        setSendEmail(!sendEmail);
+      }
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.detail);
+        throw error.response.data.detail;
+      } else {
+        console.log("An unexpected error occurred:", error);
+        throw "An unexpected error occurred.";
+      }
+    }
   };
 
-  const toggleEmail = () => {
-    setSendEmail(!sendEmail);
+  const { mutate: toggleEmail } = useMutation({
+    mutationFn: toggleEmailFn,
+    onSuccess: () =>
+      displaySuccessToast({
+        title: "Email Alerts Toggled",
+        description: "Your email alerts have been toggled successfully.",
+      }),
+    onError: (error: string) =>
+      displayErrorToast({
+        title: "Failed to Toggle Email Alerts",
+        description: error,
+      }),
+  });
+
+  const toggleActiveFn = async (target_id: number) => {
+    const token = await getToken({ template: "pingbot" });
+    console.log(token);
+    try {
+      const response = await api.put(
+        `/target/toggle?target_id=${target_id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response);
+      if (response.data) {
+        setIsActive(!isActive);
+      }
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.detail);
+        throw error.response.data.detail;
+      } else {
+        console.log("An unexpected error occurred:", error);
+        throw "An unexpected error occurred.";
+      }
+    }
   };
+
+  const { mutate: toggleActive } = useMutation({
+    mutationFn: toggleActiveFn,
+    onSuccess: () =>
+      displaySuccessToast({
+        title: "Endpoint Toggled",
+        description: "Your endpoint has been toggled successfully.",
+      }),
+    onError: (error: string) =>
+      displayErrorToast({
+        title: "Failed to Toggle Endpoint",
+        description: error,
+      }),
+  });
+
+  const deleteEndpointFn = async (target_id: number) => {
+    const token = await getToken({ template: "pingbot" });
+    console.log(token);
+    try {
+      const response = await api.delete(
+        `/target/delete?target_id=${target_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.detail);
+        throw error.response.data.detail;
+      } else {
+        console.log("An unexpected error occurred:", error);
+        throw "An unexpected error occurred.";
+      }
+    }
+  };
+
+  const { mutate: deleteEndpoint } = useMutation({
+    mutationFn: deleteEndpointFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["endpointsList"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["dashboardStats"],
+      });
+
+      displaySuccessToast({
+        title: "Endpoint Deleted",
+        description: "Your endpoint has been deleted successfully.",
+      });
+    },
+    onError: (error: string) =>
+      displayErrorToast({
+        title: "Failed to Delete Endpoint",
+        description: error,
+      }),
+  });
 
   // Switch component
   const Switch = ({
@@ -162,7 +302,7 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
             <span className="text-sm text-gray-300">Active</span>
             <Switch
               checked={isActive}
-              onCheckedChange={toggleActive}
+              onCheckedChange={() => toggleActive(endpoint.id)}
               className={`${
                 isActive ? "bg-green-700" : "bg-gray-600"
               } cursor-pointer`}
@@ -172,7 +312,7 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
             <span className="text-sm text-gray-300">Email Alerts</span>
             <Switch
               checked={sendEmail}
-              onCheckedChange={toggleEmail}
+              onCheckedChange={() => toggleEmail(endpoint.id)}
               className={`${
                 sendEmail ? "bg-green-700" : "bg-gray-600"
               } cursor-pointer`}
@@ -218,13 +358,33 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
                 } 12 12)`}
               />
             </svg>
-            <span className="text-sm text-gray-300">
-              24h Uptime: {endpoint.uptime_info.uptime_percentage}%
-            </span>
+            <Tooltip>
+              <TooltipTrigger>
+                <span className="text-sm text-gray-300 cursor-pointer">
+                  24h Uptime: {endpoint.uptime_info.uptime_percentage}%
+                </span>
+              </TooltipTrigger>
+              <TooltipContent className="bg-[#1a1a1c] border border-gray-800">
+                <p className="my-1">
+                  Period Hours: {endpoint.uptime_info.period_hours}
+                </p>
+                <p className="my-1">
+                  Total Checks: {endpoint.uptime_info.total_checks}
+                </p>
+                <p className="my-1">
+                  Succesful Checks: {endpoint.uptime_info.successful_checks}
+                </p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           <span>
-            <Trash2 color="#c53030" className="cursor-pointer" />
+            <Trash2
+              size={18}
+              color="#c53030"
+              className="cursor-pointer"
+              onClick={() => deleteEndpoint(endpoint.id)}
+            />
           </span>
         </div>
       </div>

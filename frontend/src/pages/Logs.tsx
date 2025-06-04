@@ -6,11 +6,12 @@ import {
   Clock,
   AlertCircle,
   CheckCircle,
+  Loader2,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useUser } from "@clerk/clerk-react";
-import Loading from "@/components/Loading";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
+import { api } from "@/utils/config";
+import { useQuery } from "@tanstack/react-query";
 
 // Sample data for demonstration
 const sampleLogs = [
@@ -162,15 +163,42 @@ export default function Logs() {
   const [isEndpointDropdownOpen, setIsEndpointDropdownOpen] = useState(false);
   const [selectedEndpoints, setSelectedEndpoints] = useState<string[]>([]);
 
-  const navigate = useNavigate();
-  const { isLoaded, isSignedIn } = useUser();
+  const { getToken } = useAuth();
 
-  if (!isLoaded) {
-    return <Loading />;
+  const { isPending, error, data } = useQuery({
+    queryKey: ["logs", 3],
+    queryFn: () => getLogs(3),
+  });
+
+  async function getLogs(id: number) {
+    try {
+      const token = await getToken({ template: "pingbot" });
+
+      const response = await api.get(`/target/logs?target_id=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Response:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      throw error;
+    }
   }
 
-  if (!isSignedIn) {
-    navigate("/login");
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center h-32">
+        <Loader2 className="w-8 h-8 animate-spin text-[#00ffae]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error("Error loading dashboard stats:", error);
+    return <div className="text-red-500">Error Loading Dashboard Stats</div>;
   }
 
   const statusOptions = [
