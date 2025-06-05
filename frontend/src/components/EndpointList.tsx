@@ -22,7 +22,7 @@ interface UptimeInfo {
   period_hours: number;
 }
 
-interface Endpoint {
+export interface Endpoint {
   id: number;
   name: string;
   url: string;
@@ -228,6 +228,10 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
 
       queryClient.invalidateQueries({
         queryKey: ["dashboardStats"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["logs"],
       });
 
       displaySuccessToast({

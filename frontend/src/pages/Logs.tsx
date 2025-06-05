@@ -1,194 +1,255 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
   ChevronDown,
   ChevronUp,
   RefreshCcw,
-  Clock,
-  AlertCircle,
   CheckCircle,
   Loader2,
+  X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@clerk/clerk-react";
 import { api } from "@/utils/config";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getSortedRowModel,
+  getPaginationRowModel,
+  flexRender,
+  createColumnHelper,
+} from "@tanstack/react-table";
+import type { Endpoint } from "@/components/EndpointList";
+import { StatusBadge } from "@/components/StatusBadge";
+import { formatTimeAgo } from "@/utils/formattimeAgo";
+import { ResponseTimeBadge } from "@/components/ResponseTimeBadge";
 
-// Sample data for demonstration
-const sampleLogs = [
-  {
-    id: 1,
-    timestamp: new Date(Date.now() - 5 * 60000),
-    endpoint: "https://api.example.com/health",
-    statusCode: 200,
-    responseTime: 128,
-    message: "OK",
-  },
-  {
-    id: 2,
-    timestamp: new Date(Date.now() - 15 * 60000),
-    endpoint: "https://dashboard.example.com/status",
-    statusCode: 500,
-    responseTime: 1523,
-    message: "Internal Server Error",
-  },
-  {
-    id: 3,
-    timestamp: new Date(Date.now() - 25 * 60000),
-    endpoint: "https://auth.example.com/ping",
-    statusCode: 408,
-    responseTime: 5000,
-    message: "Request Timeout",
-  },
-  {
-    id: 4,
-    timestamp: new Date(Date.now() - 35 * 60000),
-    endpoint: "https://storage.example.com/status",
-    statusCode: 200,
-    responseTime: 95,
-    message: "OK",
-  },
-  {
-    id: 5,
-    timestamp: new Date(Date.now() - 60 * 60000),
-    endpoint: "https://api.example.com/health",
-    statusCode: 200,
-    responseTime: 132,
-    message: "OK",
-  },
-  {
-    id: 6,
-    timestamp: new Date(Date.now() - 120 * 60000),
-    endpoint: "https://dashboard.example.com/status",
-    statusCode: 404,
-    responseTime: 205,
-    message: "Not Found",
-  },
-  {
-    id: 7,
-    timestamp: new Date(Date.now() - 180 * 60000),
-    endpoint: "https://auth.example.com/ping",
-    statusCode: 200,
-    responseTime: 110,
-    message: "OK",
-  },
+interface Log {
+  id: number;
+  target: {
+    id: number;
+    name: string;
+    url: string;
+  };
+  status_code: number;
+  response_time: number;
+  created_at: string;
+}
+
+const statusOptions = [
+  { value: "all", label: "All Statuses" },
+  { value: "2xx", label: "Success (2xx)" },
+  { value: "4xx", label: "Client Error (4xx)" },
+  { value: "5xx", label: "Server Error (5xx)" },
 ];
 
-// Utility function to format the timestamp
-const formatTimeAgo = (timestamp: Date): string => {
-  const now = new Date();
-  const diff = Math.floor((now.getTime() - timestamp.getTime()) / 60000); // difference in minutes
-
-  if (diff < 1) return "Just now";
-  if (diff < 60) return `${diff} min${diff !== 1 ? "s" : ""} ago`;
-
-  const hours = Math.floor(diff / 60);
-  if (hours < 24) return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
-
-  const days = Math.floor(hours / 24);
-  return `${days} day${days !== 1 ? "s" : ""} ago`;
-};
-
-// Badge component for status codes
-interface StatusBadgeProps {
-  code: number;
-  message: string;
-}
-
-const StatusBadge: React.FC<StatusBadgeProps> = ({ code, message }) => {
-  if (code >= 200 && code < 300) {
-    return (
-      <div className="flex items-center gap-2">
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
-          {code} {message}
-        </span>
-        <CheckCircle size={16} className="text-green-400" />
-      </div>
-    );
-  } else if (code >= 400 && code < 500) {
-    return (
-      <div className="flex items-center gap-2">
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-400">
-          {code} {message}
-        </span>
-        <AlertCircle size={16} className="text-yellow-400" />
-      </div>
-    );
-  } else {
-    return (
-      <div className="flex items-center gap-2">
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400">
-          {code} {message}
-        </span>
-        <AlertCircle size={16} className="text-red-400" />
-      </div>
-    );
-  }
-};
-
-// Response time badge with color based on duration
-interface ResponseTimeBadgeProps {
-  time: number;
-}
-
-const ResponseTimeBadge: React.FC<ResponseTimeBadgeProps> = ({ time }) => {
-  let bgColor = "bg-green-500/20";
-  let textColor = "text-green-400";
-
-  if (time > 1000) {
-    bgColor = "bg-red-500/20";
-    textColor = "text-red-400";
-  } else if (time > 300) {
-    bgColor = "bg-yellow-500/20";
-    textColor = "text-yellow-400";
-  }
-
-  return (
-    <div className="flex items-center gap-2">
-      <span
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bgColor} ${textColor}`}
-      >
-        {time}ms
-      </span>
-      <Clock size={16} className={textColor} />
-    </div>
-  );
-};
-
 export default function Logs() {
-  const [sortField, setSortField] = useState("timestamp");
-  const [sortDirection, setSortDirection] = useState("desc");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState("All Statuses");
+  const [selectedEndpoints, setSelectedEndpoints] = useState<number[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState("all");
   const [isEndpointDropdownOpen, setIsEndpointDropdownOpen] = useState(false);
-  const [selectedEndpoints, setSelectedEndpoints] = useState<string[]>([]);
-
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const endpointDropdownRef = useRef<HTMLDivElement>(null);
+  const statusDropdownRef = useRef<HTMLDivElement>(null);
   const { getToken } = useAuth();
 
-  const { isPending, error, data } = useQuery({
-    queryKey: ["logs", 3],
-    queryFn: () => getLogs(3),
+  const queryClient = useQueryClient();
+
+  // Fetch endpoints list first
+  const {
+    isPending: isEndpointsPending,
+    error: endpointsError,
+    data: endpointsData,
+  } = useQuery<Endpoint[]>({
+    queryKey: ["endpointsList"],
+    queryFn: getEndpointsList,
   });
 
-  async function getLogs(id: number) {
+  // Handle click outside for dropdowns
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        endpointDropdownRef.current &&
+        !endpointDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsEndpointDropdownOpen(false);
+      }
+      if (
+        statusDropdownRef.current &&
+        !statusDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsStatusDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const toggleEndpointDropdown = useCallback(() => {
+    setIsEndpointDropdownOpen((prev) => !prev);
+  }, []);
+
+  const toggleStatusDropdown = useCallback(() => {
+    setIsStatusDropdownOpen((prev) => !prev);
+  }, []);
+
+  const handleEndpointSelect = useCallback((endpointId: number) => {
+    setSelectedEndpoints((prev) => {
+      if (prev.includes(endpointId)) {
+        return prev.filter((id) => id !== endpointId);
+      }
+      return [...prev, endpointId];
+    });
+  }, []);
+
+  const handleSelectAll = useCallback(() => {
+    if (endpointsData) {
+      setSelectedEndpoints((prev) =>
+        prev.length === endpointsData.length
+          ? []
+          : endpointsData.map((e) => e.id)
+      );
+    }
+  }, [endpointsData]);
+
+  const handleStatusSelect = useCallback((status: string) => {
+    setSelectedStatus(status);
+    setIsStatusDropdownOpen(false);
+  }, []);
+
+  // Set all endpoints as selected by default when data is loaded
+  useEffect(() => {
+    if (
+      endpointsData &&
+      endpointsData.length > 0 &&
+      selectedEndpoints.length === 0
+    ) {
+      setSelectedEndpoints(endpointsData.map((endpoint) => endpoint.id));
+    }
+  }, [endpointsData, selectedEndpoints.length]);
+
+  // Fetch logs
+  const { isPending: isLogsPending, data: logsData } = useQuery<Log[]>({
+    queryKey: ["logs", selectedEndpoints],
+    queryFn: () => getLogs(selectedEndpoints),
+    enabled: selectedEndpoints.length > 0,
+  });
+
+  async function getEndpointsList() {
     try {
       const token = await getToken({ template: "pingbot" });
 
-      const response = await api.get(`/target/logs?target_id=${id}`, {
+      const response = await api.get("/target/list", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      console.log("Response:", response.data);
+      console.log(response.data);
       return response.data;
     } catch (error) {
-      console.error("Error fetching dashboard stats:", error);
+      console.error("Error fetching endpoints list:", error);
       throw error;
     }
   }
 
-  if (isPending) {
+  async function getLogs(targetIds: number[]) {
+    try {
+      const token = await getToken({ template: "pingbot" });
+
+      const response = await api.post(`/target/logs`, targetIds, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching logs:", error);
+      throw error;
+    }
+  }
+
+  const columnHelper = createColumnHelper<Log>();
+
+  // Memoize columns to prevent re-creation on every render
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("created_at", {
+        header: "Timestamp",
+        cell: (info) => {
+          const date = new Date(info.getValue());
+          return (
+            <div className="flex flex-col">
+              <span className="font-medium">
+                {formatTimeAgo(info.getValue())}
+              </span>
+              <span className="text-gray-400 text-xs">
+                {date.toLocaleDateString()} {date.toLocaleTimeString()}
+              </span>
+            </div>
+          );
+        },
+      }),
+      columnHelper.accessor("target.name", {
+        header: "Endpoint Name",
+        cell: (info) => <span className="font-medium">{info.getValue()}</span>,
+      }),
+      columnHelper.accessor("target.url", {
+        header: "Endpoint URL",
+        cell: (info) => <span className="font-medium">{info.getValue()}</span>,
+      }),
+      columnHelper.accessor("status_code", {
+        header: "Status",
+        cell: (info) => <StatusBadge code={info.getValue()} />,
+      }),
+      columnHelper.accessor("response_time", {
+        header: "Response Time",
+        cell: (info) => <ResponseTimeBadge time={info.getValue()} />,
+      }),
+    ],
+    [columnHelper]
+  );
+
+  // Memoize filtered data based on status
+  const filteredData = useMemo(() => {
+    if (!logsData) return [];
+
+    if (selectedStatus === "all") return logsData;
+
+    return logsData.filter((log) => {
+      const statusCode = log.status_code;
+      if (selectedStatus === "2xx")
+        return statusCode >= 200 && statusCode < 300;
+      if (selectedStatus === "4xx")
+        return statusCode >= 400 && statusCode < 500;
+      if (selectedStatus === "5xx") return statusCode >= 500;
+      return true;
+    });
+  }, [logsData, selectedStatus]);
+
+  // Memoize table configuration
+  const tableConfig = useMemo(
+    () => ({
+      data: filteredData,
+      columns,
+      getCoreRowModel: getCoreRowModel(),
+      getSortedRowModel: getSortedRowModel(),
+      getPaginationRowModel: getPaginationRowModel(),
+      initialState: {
+        pagination: {
+          pageSize: 10,
+        },
+      },
+    }),
+    [filteredData, columns]
+  );
+
+  const table = useReactTable(tableConfig);
+
+  if (isEndpointsPending) {
     return (
       <div className="flex items-center justify-center h-32">
         <Loader2 className="w-8 h-8 animate-spin text-[#00ffae]" />
@@ -196,103 +257,19 @@ export default function Logs() {
     );
   }
 
-  if (error) {
-    console.error("Error loading dashboard stats:", error);
-    return <div className="text-red-500">Error Loading Dashboard Stats</div>;
+  if (endpointsError) {
+    return <div className="text-red-500">Error Loading Endpoints List</div>;
   }
-
-  const statusOptions = [
-    "All Statuses",
-    "Success (2xx)",
-    "Client Error (4xx)",
-    "Server Error (5xx)",
-  ];
-
-  // Get unique endpoints from sample logs
-  const uniqueEndpoints = Array.from(
-    new Set(sampleLogs.map((log) => log.endpoint))
-  );
-
-  // Handle sorting
-  const handleSort = (field: string) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortDirection("asc");
-    }
-  };
-
-  // Handle endpoint selection
-  const toggleEndpoint = (endpoint: string) => {
-    setSelectedEndpoints((prev) =>
-      prev.includes(endpoint)
-        ? prev.filter((e) => e !== endpoint)
-        : [...prev, endpoint]
-    );
-  };
-
-  // Filter and sort logs
-  const filteredLogs = sampleLogs
-    .filter((log) => {
-      // Filter by selected endpoints
-      if (
-        selectedEndpoints.length > 0 &&
-        !selectedEndpoints.includes(log.endpoint)
-      ) {
-        return false;
-      }
-
-      return true;
-    })
-    .sort((a, b) => {
-      // Sort by selected field
-      if (sortField === "timestamp") {
-        return sortDirection === "asc"
-          ? new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-          : new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
-      } else if (sortField === "responseTime") {
-        return sortDirection === "asc"
-          ? a.responseTime - b.responseTime
-          : b.responseTime - a.responseTime;
-      } else if (sortField === "statusCode") {
-        return sortDirection === "asc"
-          ? a.statusCode - b.statusCode
-          : b.statusCode - a.statusCode;
-      } else {
-        // Sort by endpoint URL
-        const endpointA = a.endpoint.toLowerCase();
-        const endpointB = b.endpoint.toLowerCase();
-        return sortDirection === "asc"
-          ? endpointA.localeCompare(endpointB)
-          : endpointB.localeCompare(endpointA);
-      }
-    });
 
   // Simulate refreshing the logs
   const refreshLogs = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  };
-
-  // Render sort indicator
-  const renderSortIndicator = (field: string) => {
-    if (sortField !== field) return null;
-
-    return sortDirection === "asc" ? (
-      <ChevronUp size={16} />
-    ) : (
-      <ChevronDown size={16} />
-    );
+    queryClient.invalidateQueries({ queryKey: ["logs"] });
   };
 
   return (
     <div className="bg-[#0e0e10] min-h-screen px-4 py-4 text-white">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
-
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -307,16 +284,18 @@ export default function Logs() {
           </p>
         </motion.div>
 
-        {/* Filter and Search Section */}
+        {/* Filters Section */}
         <div className="mb-6 flex flex-col md:flex-row gap-4">
-          <div className="relative">
+          {/* Endpoints Dropdown */}
+          <div className="relative flex-1" ref={endpointDropdownRef}>
             <button
-              onClick={() => setIsEndpointDropdownOpen(!isEndpointDropdownOpen)}
+              type="button"
+              onClick={toggleEndpointDropdown}
               className="w-full px-4 py-2 bg-[#1a1a1c] border border-gray-700 rounded-lg flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#00ffae]/50"
             >
               <span>
                 {selectedEndpoints.length === 0
-                  ? "All Endpoints"
+                  ? "Select Endpoints"
                   : `${selectedEndpoints.length} Selected`}
               </span>
               <ChevronDown size={18} className="ml-2 text-gray-400" />
@@ -326,82 +305,105 @@ export default function Logs() {
               <div className="absolute z-10 mt-1 w-full bg-[#1a1a1c] border border-gray-700 rounded-lg shadow-lg max-h-60 overflow-auto">
                 <div className="p-2 border-b border-gray-700">
                   <button
+                    type="button"
                     className="w-full text-left px-2 py-1 text-sm text-[#00ffae] hover:bg-gray-800 rounded"
-                    onClick={() => {
-                      setSelectedEndpoints(
-                        selectedEndpoints.length === uniqueEndpoints.length
-                          ? []
-                          : uniqueEndpoints
-                      );
-                    }}
+                    onClick={handleSelectAll}
                   >
-                    {selectedEndpoints.length === uniqueEndpoints.length
+                    {selectedEndpoints.length === endpointsData?.length
                       ? "Deselect All"
                       : "Select All"}
                   </button>
                 </div>
-                {uniqueEndpoints.map((endpoint) => (
+                {endpointsData?.map((endpoint) => (
                   <div
-                    key={endpoint}
+                    key={endpoint.id}
                     className="px-4 py-2 hover:bg-gray-800 cursor-pointer flex items-center"
-                    onClick={() => toggleEndpoint(endpoint)}
+                    onClick={() => handleEndpointSelect(endpoint.id)}
                   >
                     <div
                       className={`w-4 h-4 border rounded mr-2 flex items-center justify-center ${
-                        selectedEndpoints.includes(endpoint)
+                        selectedEndpoints.includes(endpoint.id)
                           ? "bg-[#00ffae] border-[#00ffae]"
                           : "border-gray-500"
                       }`}
                     >
-                      {selectedEndpoints.includes(endpoint) && (
+                      {selectedEndpoints.includes(endpoint.id) && (
                         <CheckCircle size={14} className="text-[#0e0e10]" />
                       )}
                     </div>
-                    <span className="truncate">{endpoint}</span>
+                    <span className="truncate">{endpoint.name}</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="relative">
+          {/* Status Dropdown */}
+          <div className="relative" ref={statusDropdownRef}>
             <button
-              onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+              type="button"
+              onClick={toggleStatusDropdown}
               className="w-full md:w-auto px-4 py-2 bg-[#1a1a1c] border border-gray-700 rounded-lg flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#00ffae]/50"
             >
-              <span>{selectedStatus}</span>
+              <span>
+                {statusOptions.find((s) => s.value === selectedStatus)?.label}
+              </span>
               <ChevronDown size={18} className="ml-2 text-gray-400" />
             </button>
 
             {isStatusDropdownOpen && (
-              <div className="absolute z-10 mt-1 w-full bg-[#1a1a1c] border border-gray-700 rounded-lg shadow-lg max-h-60 overflow-auto">
+              <div className="absolute z-10 mt-1 w-full bg-[#1a1a1c] border border-gray-700 rounded-lg shadow-lg">
                 {statusOptions.map((status) => (
                   <div
-                    key={status}
+                    key={status.value}
                     className="px-4 py-2 hover:bg-gray-800 cursor-pointer"
-                    onClick={() => {
-                      setSelectedStatus(status);
-                      setIsStatusDropdownOpen(false);
-                    }}
+                    onClick={() => handleStatusSelect(status.value)}
                   >
-                    {status}
+                    {status.label}
                   </div>
                 ))}
               </div>
             )}
           </div>
 
+          {/* Refresh Button */}
           <button
             onClick={refreshLogs}
             className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#00ffae]/50"
           >
             <RefreshCcw
               size={18}
-              className={`mr-2 ${isLoading ? "animate-spin" : ""}`}
+              className={`mr-2 ${isLogsPending ? "animate-spin" : ""}`}
             />
             Refresh
           </button>
         </div>
+
+        {/* Selected Endpoints Tags */}
+        {selectedEndpoints.length > 0 && (
+          <div className="mb-6 flex flex-wrap gap-2">
+            {selectedEndpoints.map((id) => {
+              const endpoint = endpointsData?.find((e) => e.id === id);
+              return (
+                endpoint && (
+                  <div
+                    key={id}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-[#00ffae]/10 text-[#00ffae]"
+                  >
+                    {endpoint.name}
+                    <button
+                      type="button"
+                      onClick={() => handleEndpointSelect(id)}
+                      className="ml-2 hover:text-white"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                )
+              );
+            })}
+          </div>
+        )}
 
         {/* Logs Table */}
         <motion.div
@@ -413,47 +415,31 @@ export default function Logs() {
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-800">
               <thead>
-                <tr>
-                  <th
-                    className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hover:text-[#00ffae]"
-                    onClick={() => handleSort("timestamp")}
-                  >
-                    <div className="flex items-center">
-                      Timestamp
-                      {renderSortIndicator("timestamp")}
-                    </div>
-                  </th>
-                  <th
-                    className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hover:text-[#00ffae]"
-                    onClick={() => handleSort("endpoint")}
-                  >
-                    <div className="flex items-center">
-                      Endpoint URL
-                      {renderSortIndicator("endpoint")}
-                    </div>
-                  </th>
-                  <th
-                    className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hover:text-[#00ffae]"
-                    onClick={() => handleSort("statusCode")}
-                  >
-                    <div className="flex items-center">
-                      Status
-                      {renderSortIndicator("statusCode")}
-                    </div>
-                  </th>
-                  <th
-                    className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hover:text-[#00ffae]"
-                    onClick={() => handleSort("responseTime")}
-                  >
-                    <div className="flex items-center">
-                      Response Time
-                      {renderSortIndicator("responseTime")}
-                    </div>
-                  </th>
-                </tr>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <th
+                        key={header.id}
+                        className="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hover:text-[#00ffae]"
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        <div className="flex items-center">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                          {{
+                            asc: <ChevronUp size={16} className="ml-1" />,
+                            desc: <ChevronDown size={16} className="ml-1" />,
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                ))}
               </thead>
               <tbody className="divide-y divide-gray-800">
-                {isLoading ? (
+                {isLogsPending ? (
                   // Loading state
                   Array(5)
                     .fill(0)
@@ -473,43 +459,33 @@ export default function Logs() {
                         </td>
                       </tr>
                     ))
-                ) : filteredLogs.length > 0 ? (
+                ) : table.getRowModel().rows.length > 0 ? (
                   // Actual logs data
-                  filteredLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-gray-800/50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <div className="flex flex-col">
-                          <span className="font-medium">
-                            {formatTimeAgo(log.timestamp)}
-                          </span>
-                          <span className="text-gray-400 text-xs">
-                            {log.timestamp.toLocaleDateString()}{" "}
-                            {log.timestamp.toLocaleTimeString()}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <span className="font-medium">{log.endpoint}</span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <StatusBadge
-                          code={log.statusCode}
-                          message={log.message}
-                        />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <ResponseTimeBadge time={log.responseTime} />
-                      </td>
+                  table.getRowModel().rows.map((row) => (
+                    <tr key={row.id} className="hover:bg-gray-800/50">
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          className="px-6 py-4 whitespace-nowrap text-sm"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
                     </tr>
                   ))
                 ) : (
                   // No results found
                   <tr>
                     <td
-                      colSpan={4}
+                      colSpan={columns.length}
                       className="px-6 py-10 text-center text-gray-400"
                     >
-                      No log entries found matching your criteria.
+                      {selectedEndpoints.length === 0
+                        ? "Please select at least one endpoint to view logs"
+                        : "No log entries found"}
                     </td>
                   </tr>
                 )}
@@ -517,51 +493,47 @@ export default function Logs() {
             </table>
           </div>
 
-          {/* Mobile Card View (only visible on small screens) */}
-          {/* <div className="md:hidden space-y-4 p-4">
-            {!isLoading &&
-              filteredLogs.length > 0 &&
-              filteredLogs.map((log) => (
-                <div
-                  key={`mobile-${log.id}`}
-                  className="bg-gray-800/30 p-4 rounded-lg border border-gray-700"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="font-medium">
-                      {formatTimeAgo(log.timestamp)}
-                    </span>
-                    <StatusBadge code={log.statusCode} message={log.message} />
-                  </div>
-                  <div className="text-sm text-gray-300 mb-2 truncate">
-                    {log.endpoint}
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-400">
-                      {log.timestamp.toLocaleDateString()}{" "}
-                      {log.timestamp.toLocaleTimeString()}
-                    </span>
-                    <ResponseTimeBadge time={log.responseTime} />
-                  </div>
-                </div>
-              ))}
-          </div> */}
-
           {/* Pagination */}
           <div className="px-6 py-4 border-t border-gray-800 flex items-center justify-between">
             <div className="flex-1 flex justify-between sm:hidden">
-              <button className="px-4 py-2 bg-gray-800 text-sm font-medium rounded-lg hover:bg-gray-700">
+              <button
+                type="button"
+                className="px-4 py-2 bg-gray-800 text-sm font-medium rounded-lg hover:bg-gray-700 disabled:opacity-50"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
                 Previous
               </button>
-              <button className="ml-3 px-4 py-2 bg-gray-800 text-sm font-medium rounded-lg hover:bg-gray-700">
+              <button
+                type="button"
+                className="ml-3 px-4 py-2 bg-gray-800 text-sm font-medium rounded-lg hover:bg-gray-700 disabled:opacity-50"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
                 Next
               </button>
             </div>
             <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-gray-400">
-                  Showing <span className="font-medium">1</span> to{" "}
-                  <span className="font-medium">{filteredLogs.length}</span> of{" "}
-                  <span className="font-medium">{sampleLogs.length}</span>{" "}
+                  Showing{" "}
+                  <span className="font-medium">
+                    {table.getState().pagination.pageIndex *
+                      table.getState().pagination.pageSize +
+                      1}
+                  </span>{" "}
+                  to{" "}
+                  <span className="font-medium">
+                    {Math.min(
+                      (table.getState().pagination.pageIndex + 1) *
+                        table.getState().pagination.pageSize,
+                      table.getRowModel().rows.length
+                    )}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-medium">
+                    {table.getRowModel().rows.length}
+                  </span>{" "}
                   results
                 </p>
               </div>
@@ -570,19 +542,37 @@ export default function Logs() {
                   className="inline-flex rounded-md shadow-sm -space-x-px"
                   aria-label="Pagination"
                 >
-                  <button className="px-2 py-2 rounded-l-lg border border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700">
+                  <button
+                    type="button"
+                    className="px-2 py-2 rounded-l-lg border border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700 disabled:opacity-50"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                  >
                     Previous
                   </button>
-                  <button className="px-4 py-2 border border-gray-700 bg-[#00ffae]/10 text-[#00ffae] hover:bg-[#00ffae]/20">
-                    1
-                  </button>
-                  <button className="px-4 py-2 border border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700">
-                    2
-                  </button>
-                  <button className="px-4 py-2 border border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700">
-                    3
-                  </button>
-                  <button className="px-2 py-2 rounded-r-lg border border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700">
+                  {Array.from(
+                    { length: table.getPageCount() },
+                    (_, i) => i + 1
+                  ).map((page) => (
+                    <button
+                      key={page}
+                      type="button"
+                      className={`px-4 py-2 border border-gray-700 ${
+                        table.getState().pagination.pageIndex === page - 1
+                          ? "bg-[#00ffae]/10 text-[#00ffae]"
+                          : "bg-gray-800 text-gray-400"
+                      } hover:bg-gray-700`}
+                      onClick={() => table.setPageIndex(page - 1)}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="px-2 py-2 rounded-r-lg border border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700 disabled:opacity-50"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                  >
                     Next
                   </button>
                 </nav>
