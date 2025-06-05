@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+from typing import List
+
 from sqlalchemy import and_
 
 from fastapi import HTTPException
@@ -324,7 +326,7 @@ class TargetService:
             )
 
     @staticmethod
-    def get_target_logs(target_id: int, user: User, db: Session):
+    def get_target_logs(target_ids: List[int], user: User, db: Session):
         try:
             if user is None:
                 raise HTTPException(
@@ -332,20 +334,22 @@ class TargetService:
                     detail="User not authenticated"
                 )
 
-            target = db.query(PingTarget).filter(
-                PingTarget.id == target_id,
+            targets = db.query(PingTarget).filter(
+                PingTarget.id.in_(target_ids),
                 PingTarget.user_id == user.id
-            ).first()
+            ).all()
 
-            print(f"Target found: {target}")
-
-            if not target:
+            if not targets:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Target not found"
+                    detail="No targets found"
                 )
 
-            return [TargetLogsResponse.model_validate(log) for log in target.logs]
+            logs = []
+            for target in targets:
+                logs.extend(target.logs)
+
+            return [TargetLogsResponse.model_validate(log) for log in logs]
 
         except SQLAlchemyError as e:
             print(f"Database error: {e}")

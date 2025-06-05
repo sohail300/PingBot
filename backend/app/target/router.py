@@ -36,6 +36,6 @@ def delete_target(target_id: int, user: get_current_user_dependency, db: db_depe
     return TargetService.delete_target(target_id, user, db)
 
 
-@target_router.get("/logs", response_model=List[TargetLogsResponse], status_code=status.HTTP_200_OK)
-def get_target_logs(target_id: int, user: get_current_user_dependency, db: db_dependency):
-    return TargetService.get_target_logs(target_id, user, db)
+@target_router.post("/logs", response_model=List[TargetLogsResponse], status_code=status.HTTP_200_OK)
+def get_target_logs(target_ids: List[int], user: get_current_user_dependency, db: db_dependency):
+    return TargetService.get_target_logs(target_ids, user, db)
