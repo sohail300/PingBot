@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from typing import List
+from urllib.parse import urlparse
 
 from sqlalchemy import and_
 
@@ -26,18 +27,27 @@ class TargetService:
                     detail="User not authenticated"
                 )
 
-            target = PingTarget(
-                user_id=user.id,
-                **details.model_dump(),
-            )
+            parsed = urlparse(details.url)
+            if parsed.scheme in ["http", "https"] and not parsed.hostname.startswith(("127.", "localhost")):
 
-            db.add(target)
-            db.commit()
-            db.refresh(target)
+                target = PingTarget(
+                    user_id=user.id,
+                    **details.model_dump(),
+                )
 
-            return {
-                "message": f"Target created successfully: {target.id}"
-            }
+                db.add(target)
+                db.commit()
+                db.refresh(target)
+
+                return {
+                    "message": f"Target created successfully: {target.id}"
+                }
+
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Invalid URL format. Must start with http:// or https:// and must not be localhost url"
+                )
 
         except IntegrityError as e:
             db.rollback()

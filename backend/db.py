@@ -7,7 +7,6 @@ from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy.util.preloaded import engine_url
 
 load_dotenv()
 

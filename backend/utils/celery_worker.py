@@ -2,9 +2,8 @@ import datetime
 
 from celery import Celery
 import requests
-from sqlalchemy import func
 
-from db import db_dependency, SessionLocal
+from db import SessionLocal
 from models import PingTarget, PingLogs
 from utils.send_email import send_mail
 import os

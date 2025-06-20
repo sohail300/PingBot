@@ -1,14 +1,11 @@
 import os
 from typing import Annotated, Optional
-
-import httpx
-from jose import jwt
 from logger import logger
 from dotenv import load_dotenv
 from db import db_dependency
 from fastapi import Request, Depends
 from clerk_backend_api import Clerk
-from clerk_backend_api.jwks_helpers import authenticate_request, AuthenticateRequestOptions
+from clerk_backend_api.jwks_helpers import AuthenticateRequestOptions
 
 from models import User
 

@@ -1,6 +1,5 @@
 import os
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from starlette.middleware.cors import CORSMiddleware
@@ -9,8 +8,10 @@ from app.email.router import email_router
 from app.target.router import target_router
 from app.webhook.router import webhook_router
 from db import engine, Base
-from auth import get_current_user_dependency
 from utils.scheduler import scheduler
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 load_dotenv()
 
@@ -31,10 +32,14 @@ app = FastAPI(
 )
 
 app.add_middleware(CORSMiddleware,
-                   allow_origins=["*"],
+                   allow_origins=["http://localhost:5173/", "https://pingbot.heysohail.xyz/ pip install slowapi"],
                    allow_credentials=True,
                    allow_methods=["*"],
                    allow_headers=["*"], )
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 def custom_openapi():
@@ -62,19 +67,9 @@ app.openapi = custom_openapi
 
 
 @app.get('/')
+@limiter.limit("2/second")
 async def root():
     return {'message': 'Healthy Server!'}
-
-
-@app.get('/test')
-async def test_route(user: get_current_user_dependency):
-    if user:
-        print(user)
-        return {'user': user}
-
-    else:
-        print("No authenticated user")
-        return {'user_id': None}
 
 
 app.include_router(webhook_router)
