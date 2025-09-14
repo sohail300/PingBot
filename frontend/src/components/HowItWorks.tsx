@@ -1,9 +1,45 @@
+import { motion } from "framer-motion";
+
+const steps = [
+  {
+    number: "Step 1",
+    title: "Login to your account",
+    description:
+      "Secure authentication with just a few clicks. No complicated setup required.",
+  },
+  {
+    number: "Step 2",
+    title: "Add URLs to Monitor",
+    description:
+      "Enter the endpoints you want to keep warm and monitored in your dashboard.",
+  },
+  {
+    number: "Step 3",
+    title: "We Ping Them Regularly",
+    description:
+      "PingBot automatically sends requests to your endpoints every 30 mins.",
+  },
+  {
+    number: "Step 4",
+    title: "Get Notified if Something Breaks",
+    description:
+      "Receive instant alerts via email when an endpoint fails to respond or returns an error.",
+  },
+];
+
 export const HowItWorksSection = () => {
   return (
     <section id="how-it-works" className="bg-[#121212] py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: false, amount: 0.2 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4">
             How{" "}
             <span className="bg-gradient-to-r from-[#00ffae] to-[#00e0ff] text-transparent bg-clip-text">
               PingBot
@@ -13,58 +49,58 @@ export const HowItWorksSection = () => {
           <p className="max-w-2xl mx-auto text-gray-400">
             Get up and running in minutes with our simple setup process.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="max-w-3xl mx-auto">
-          <div className="relative">
-            {/* Vertical line connecting steps */}
-            <div className="absolute left-6 top-6 bottom-0 w-0.5 bg-gradient-to-b from-[#00ffae] to-[#00e0ff] hidden md:block"></div>
+        {/* Timeline */}
+        <div className="relative">
+          {/* Central vertical glowing line + dots */}
+          <div className="timeline-wrapper hidden md:block">
+            <div className="timeline-line"></div>
+          </div>
 
-            <div className="space-y-12">
-              <StepCard
-                number="1"
-                title="Login with Google"
-                description="Secure authentication with just a few clicks. No complicated setup required."
-              />
-              <StepCard
-                number="2"
-                title="Add URLs to Monitor"
-                description="Enter the endpoints you want to keep warm and monitored in your dashboard."
-              />
-              <StepCard
-                number="3"
-                title="We Ping Them Regularly"
-                description="PingBot automatically sends requests to your endpoints every 30 mins."
-              />
-              <StepCard
-                number="4"
-                title="Get Notified if Something Breaks"
-                description="Receive instant alerts via email when an endpoint fails to respond or returns an error."
-              />
-            </div>
+          <div className="">
+            {steps.map((step, i) => {
+              const isLeft = i % 2 === 0;
+              return (
+                <motion.div
+                  key={step.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  viewport={{ once: false, amount: 0.2 }}
+                  className="relative flex flex-col md:flex-row items-center justify-between mb-32"
+                >
+                  {/* Content */}
+                  <div
+                    className={`${
+                      isLeft ? "order-1" : "order-2"
+                    } flex flex-col items-start gap-2 w-1/2 mb-6 md:mb-0 px-12`}
+                  >
+                    <span className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-[#00ffae] to-[#00e0ff] text-[#0e0e10] text-sm font-medium">
+                      {step.number}
+                    </span>
+                    <h3 className="text-xl md:text-2xl lg:text-2xl xl:text-3xl font-semibold text-white mt-4 mb-2">
+                      {step.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm md:text-base lg:text-base xl:text-lg leading-6 md:leading-7 lg:leading-7 xl:leading-8">
+                      {step.description}
+                    </p>
+                  </div>
+
+                  {/* Use Image */}
+                  <img
+                    src="/how-it-works/1.png"
+                    alt="How It Works"
+                    className={`${
+                      isLeft ? "order-2" : "order-1"
+                    } w-1/2 px-12 h-full object-contain rounded-xl`}
+                  />
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>
     </section>
-  );
-};
-
-type StepCardProps = {
-  number: string;
-  title: string;
-  description: string;
-};
-
-const StepCard = ({ number, title, description }: StepCardProps) => {
-  return (
-    <div className="relative flex flex-col md:flex-row items-start gap-4">
-      <div className="flex-shrink-0 h-12 w-12 rounded-full bg-gradient-to-r from-[#00ffae] to-[#00e0ff] flex items-center justify-center text-[#0e0e10] font-bold text-lg z-10">
-        {number}
-      </div>
-      <div className="md:pl-4 pb-10">
-        <h3 className="text-xl font-bold mb-1 text-white">{title}</h3>
-        <p className="text-gray-400">{description}</p>
-      </div>
-    </div>
   );
 };

@@ -5,7 +5,7 @@ export default function Login() {
     <div className="relative min-h-screen overflow-hidden">
       {/* Animated background */}
       <div className="absolute inset-0 bg-[#0e0e10]">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-transparent to-pink-500/20 animate-gradient" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#00ffae]/20 via-transparent to-[#00e0ff]/20 animate-gradient" />
       </div>
 
       {/* Content */}

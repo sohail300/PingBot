@@ -28,6 +28,8 @@ export const DashboardStats = () => {
     try {
       const token = await getToken({ template: "pingbot" });
 
+      console.log("Token:", token);
+
       const response = await api.get("/target/dashboard-stats", {
         headers: {
           Authorization: `Bearer ${token}`,
