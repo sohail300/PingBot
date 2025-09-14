@@ -6,24 +6,28 @@ const steps = [
     title: "Login to your account",
     description:
       "Secure authentication with just a few clicks. No complicated setup required.",
+    image: "/how-it-works/1.png",
   },
   {
     number: "Step 2",
     title: "Add URLs to Monitor",
     description:
       "Enter the endpoints you want to keep warm and monitored in your dashboard.",
+    image: "/how-it-works/2.png",
   },
   {
     number: "Step 3",
     title: "We Ping Them Regularly",
     description:
       "PingBot automatically sends requests to your endpoints every 30 mins.",
+    image: "/how-it-works/3.png",
   },
   {
     number: "Step 4",
     title: "Get Notified if Something Breaks",
     description:
       "Receive instant alerts via email when an endpoint fails to respond or returns an error.",
+    image: "/how-it-works/4.png",
   },
 ];
 
@@ -89,8 +93,8 @@ export const HowItWorksSection = () => {
 
                   {/* Use Image */}
                   <img
-                    src="/how-it-works/1.png"
-                    alt="How It Works"
+                    src={step.image}
+                    alt={step.title}
                     className={`${
                       isLeft ? "order-2" : "order-1"
                     } w-1/2 px-12 h-full object-contain rounded-xl`}
