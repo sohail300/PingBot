@@ -195,6 +195,7 @@ class TargetService:
     @staticmethod
     def dashboard_stats(user: User, db: Session):
         try:
+
             if user is None:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,

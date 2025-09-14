@@ -17,36 +17,40 @@ resend.api_key = os.getenv("RESEND_API_KEY")
 
 def send_mail(user_id: str, target_id: int, email: str, endpoint_name, user_name: str, endpoint_url: str,
               timestamp: datetime, status_code: int, db: db_dependency):
-    subject_values = {
-        "endpoint_name": endpoint_name
-    }
-    email_subject = dynamic_content(content=subject, values=subject_values)
-    print(f"Timestamp: {timestamp}")
+    try:
 
-    html_values = {
-        "user_name": user_name,
-        "endpoint_url": endpoint_url,
-        "timestamp": timestamp,
-        "status_code": status_code
-    }
-    email_html = dynamic_content(content=html, values=html_values)
+        subject_values = {
+            "endpoint_name": endpoint_name
+        }
+        email_subject = dynamic_content(content=subject, values=subject_values)
 
-    params: resend.Emails.SendParams = {
-        "from": "Md Sohail Ansari <contact@heysohail.me>",
-        "to": [email],
-        "subject": email_subject,
-        "html": email_html
-    }
+        html_values = {
+            "user_name": user_name,
+            "endpoint_url": endpoint_url,
+            "timestamp": timestamp,
+            "status_code": status_code
+        }
+        email_html = dynamic_content(content=html, values=html_values)
 
-    email = resend.Emails.send(params)
+        params: resend.Emails.SendParams = {
+            "from": "Md Sohail Ansari <no-reply@contact.heysohail.xyz>",
+            "to": [email],
+            "subject": email_subject,
+            "html": email_html,
+        }
 
-    db_email = EmailsSent(
-        user_id=user_id,
-        target_id=target_id,
-        subject=email_subject,
-        body=email_html
-    )
-    db.add(db_email)
+        email_send: resend.Email = resend.Emails.send(params)
+        print(email_send)
+
+        db_email = EmailsSent(
+            user_id=user_id,
+            target_id=target_id,
+            subject=email_subject,
+            body=email_html
+        )
+        db.add(db_email)
+    except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
 
 # send_mail(
 #     email="sohailatwork10@gmail.com",

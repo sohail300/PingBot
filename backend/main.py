@@ -9,9 +9,6 @@ from app.target.router import target_router
 from app.webhook.router import webhook_router
 from db import engine, Base
 from utils.scheduler import scheduler
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
 
 load_dotenv()
 
@@ -32,14 +29,10 @@ app = FastAPI(
 )
 
 app.add_middleware(CORSMiddleware,
-                   allow_origins=["http://localhost:5173/", "https://pingbot.heysohail.xyz/ pip install slowapi"],
+                   allow_origins=["*"],
                    allow_credentials=True,
                    allow_methods=["*"],
                    allow_headers=["*"], )
-
-limiter = Limiter(key_func=get_remote_address)
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 def custom_openapi():
@@ -67,7 +60,6 @@ app.openapi = custom_openapi
 
 
 @app.get('/')
-@limiter.limit("2/second")
 async def root():
     return {'message': 'Healthy Server!'}
 
