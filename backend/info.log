@@ -3717,3 +3717,29 @@ Setting ssl_cert_reqs=CERT_NONE when connecting to redis means that celery will 
 2025-09-14 20:18:40,051 - apscheduler.executors.default - INFO - Job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 20:18:45 IST)" executed successfully
 2025-09-14 20:18:45,010 - apscheduler.executors.default - INFO - Running job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 20:18:50 IST)" (scheduled at 2025-09-14 20:18:45+05:30)
 2025-09-14 20:18:45,029 - apscheduler.executors.default - INFO - Job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 20:18:50 IST)" executed successfully
+2025-09-14 22:17:50,426 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 4
+2025-09-14 22:17:50,427 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 18
+2025-09-14 22:17:52,038 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 4
+2025-09-14 22:17:52,040 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 18
+2025-09-14 22:17:54,466 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 4
+2025-09-14 22:17:54,467 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 18
+2025-09-14 22:17:55,857 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 4
+2025-09-14 22:17:55,858 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 18
+2025-09-14 22:17:55,859 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 4
+2025-09-14 22:17:55,860 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 18
+2025-09-14 22:17:55,881 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-09-14 22:17:55,882 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 4
+2025-09-14 22:17:55,883 - dotenv.main - WARNING - python-dotenv could not parse statement starting at line 18
+2025-09-14 22:17:58,760 - apscheduler.scheduler - INFO - Added job "run_process" to job store "default"
+2025-09-14 22:17:58,760 - apscheduler.scheduler - INFO - Scheduler started
+2025-09-14 22:18:00,052 - apscheduler.executors.default - INFO - Running job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 22:18:00 IST)" (scheduled at 2025-09-14 22:18:00+05:30)
+2025-09-14 22:18:00,217 - celery.backends.redis - WARNING - 
+Setting ssl_cert_reqs=CERT_NONE when connecting to redis means that celery will not validate the identity of the redis broker when connecting. This leaves you vulnerable to man in the middle attacks.
+
+2025-09-14 22:18:01,692 - apscheduler.executors.default - INFO - Job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 22:18:05 IST)" executed successfully
+2025-09-14 22:18:05,008 - apscheduler.executors.default - INFO - Running job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 22:18:10 IST)" (scheduled at 2025-09-14 22:18:05+05:30)
+2025-09-14 22:18:05,058 - apscheduler.executors.default - INFO - Job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 22:18:10 IST)" executed successfully
+2025-09-14 22:18:10,002 - apscheduler.executors.default - INFO - Running job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 22:18:15 IST)" (scheduled at 2025-09-14 22:18:10+05:30)
+2025-09-14 22:18:10,111 - apscheduler.executors.default - INFO - Job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 22:18:15 IST)" executed successfully
+2025-09-14 22:18:15,004 - apscheduler.executors.default - INFO - Running job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 22:18:20 IST)" (scheduled at 2025-09-14 22:18:15+05:30)
+2025-09-14 22:18:15,051 - apscheduler.executors.default - INFO - Job "run_process (trigger: cron[second='*/5'], next run at: 2025-09-14 22:18:20 IST)" executed successfully

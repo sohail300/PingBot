@@ -17,4 +17,4 @@ def run_process():
         print(f"❌ ERROR: {str(e)}")
 
 
-scheduler.add_job(run_process, 'cron', second='*/5')
+scheduler.add_job(run_process, 'cron', minute='*/30')
