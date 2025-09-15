@@ -98,6 +98,8 @@ export const HowItWorksSection = () => {
                     className={`${
                       isLeft ? "order-2" : "order-1"
                     } w-1/2 px-12 h-full object-contain rounded-xl`}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </motion.div>
               );

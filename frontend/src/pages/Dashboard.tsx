@@ -13,8 +13,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchToken = async () => {
-      const token = await getToken({ template: "pingbot" });
-      console.log(token);
+      await getToken({ template: "pingbot" });
     };
     fetchToken();
   }, [getToken]);

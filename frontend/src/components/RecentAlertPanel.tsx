@@ -38,7 +38,6 @@ export const RecentAlertsPanel = () => {
         },
       });
 
-      console.log("Response:", response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
@@ -89,13 +88,16 @@ export const RecentAlertsPanel = () => {
 const AlertItem = ({ alert }: { alert: Alert }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString("en-US", {
+    const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+    const istDate = new Date(date.getTime() + istOffset);
+    return `${istDate.toLocaleString("en-US", {
+      day: "2-digit",
       month: "short",
-      day: "numeric",
+    })}, ${istDate.toLocaleString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
-    });
+    })} IST`;
   };
 
   return (

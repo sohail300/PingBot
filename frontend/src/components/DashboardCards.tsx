@@ -28,15 +28,12 @@ export const DashboardStats = () => {
     try {
       const token = await getToken({ template: "pingbot" });
 
-      console.log("Token:", token);
-
       const response = await api.get("/target/dashboard-stats", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      console.log("Response:", response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);

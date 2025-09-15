@@ -1,4 +1,13 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+
+declare global {
+  interface Window {
+    __lenis?: {
+      stop?: () => void;
+      start?: () => void;
+    };
+  }
+}
 import {
   ChevronDown,
   ChevronUp,
@@ -53,6 +62,18 @@ export default function Logs() {
   const { getToken } = useAuth();
 
   const queryClient = useQueryClient();
+  // Pause Lenis smooth scrolling on this heavy page to reduce CPU on Windows Chrome
+  useEffect(() => {
+    const lenis = window.__lenis;
+    if (lenis?.stop) {
+      lenis.stop();
+    }
+    return () => {
+      if (lenis?.start) {
+        lenis.start();
+      }
+    };
+  }, []);
 
   // Fetch endpoints list first
   const {
@@ -147,7 +168,6 @@ export default function Logs() {
         },
       });
 
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching endpoints list:", error);
@@ -181,13 +201,25 @@ export default function Logs() {
         header: "Timestamp",
         cell: (info) => {
           const date = new Date(info.getValue());
+          const istDate = new Date(
+            date.toLocaleString("en-US", {
+              timeZone: "Asia/Kolkata",
+            })
+          );
           return (
             <div className="flex flex-col">
               <span className="font-medium">
                 {formatTimeAgo(info.getValue())}
               </span>
               <span className="text-gray-400 text-xs">
-                {date.toLocaleDateString()} {date.toLocaleTimeString()}
+                {istDate.toLocaleString("en-US", {
+                  day: "2-digit",
+                  month: "short",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                  timeZone: "Asia/Kolkata",
+                })}
               </span>
             </div>
           );

@@ -52,8 +52,6 @@ export const EndpointList = () => {
     queryFn: getEndpointsList,
   });
 
-  console.log("Data:", data);
-
   async function getEndpointsList() {
     try {
       const token = await getToken({ template: "pingbot" });
@@ -64,7 +62,6 @@ export const EndpointList = () => {
         },
       });
 
-      console.log("Response:", response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
@@ -109,7 +106,6 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
 
   const toggleEmailFn = async (target_id: number) => {
     const token = await getToken({ template: "pingbot" });
-    console.log(token);
     try {
       const response = await api.put(
         `/email/toggle?target_id=${target_id}`,
@@ -121,7 +117,6 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
         }
       );
 
-      console.log(response);
       if (response.data) {
         setSendEmail(!sendEmail);
       }
@@ -153,7 +148,6 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
 
   const toggleActiveFn = async (target_id: number) => {
     const token = await getToken({ template: "pingbot" });
-    console.log(token);
     try {
       const response = await api.put(
         `/target/toggle?target_id=${target_id}`,
@@ -165,7 +159,6 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
         }
       );
 
-      console.log(response);
       if (response.data) {
         setIsActive(!isActive);
       }
@@ -197,7 +190,6 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
 
   const deleteEndpointFn = async (target_id: number) => {
     const token = await getToken({ template: "pingbot" });
-    console.log(token);
     try {
       const response = await api.delete(
         `/target/delete?target_id=${target_id}`,
@@ -208,7 +200,6 @@ const EndpointCard = ({ endpoint }: { endpoint: Endpoint }) => {
         }
       );
 
-      console.log(response);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

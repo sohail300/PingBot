@@ -103,7 +103,6 @@ const AddEndpointForm = () => {
     emailNotifications: boolean;
   }) {
     try {
-      console.log(formData);
       const token = await getToken({ template: "pingbot" });
 
       const response = await api.post(
@@ -120,7 +119,6 @@ const AddEndpointForm = () => {
         }
       );
 
-      console.log(response);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
