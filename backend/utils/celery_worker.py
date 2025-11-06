@@ -4,8 +4,8 @@ from celery import Celery
 import requests
 from redis.connection import ssl
 
-from db import SessionLocal
-from models import PingTarget, PingLogs
+from core.db import SessionLocal
+from core.models import PingTarget, PingLogs
 from utils.send_email import send_mail
 import os
 from dotenv import load_dotenv
@@ -17,16 +17,19 @@ BACKEND_URL = os.getenv("BACKEND_URL")
 
 app = Celery('celery_worker', broker=BROKER_URL, backend=BACKEND_URL)
 
-# Configure SSL
-app.conf.broker_use_ssl = {
-    "ssl_cert_reqs": ssl.CERT_NONE  # or ssl.CERT_REQUIRED if you want strict verification
-}
-app.conf.redis_backend_use_ssl = {
-    "ssl_cert_reqs": ssl.CERT_NONE
-}
+# Configure SSL only if using SSL connection (rediss://)
+if BROKER_URL and BROKER_URL.startswith('rediss://'):
+    app.conf.broker_use_ssl = {
+        "ssl_cert_reqs": ssl.CERT_NONE  # or ssl.CERT_REQUIRED if you want strict verification
+    }
+if BACKEND_URL and BACKEND_URL.startswith('rediss://'):
+    app.conf.redis_backend_use_ssl = {
+        "ssl_cert_reqs": ssl.CERT_NONE
+    }
 
 @app.task
 def monitor_endpoint():
+    db = None
     try:
         db = SessionLocal()
         print(f"Initializing endpoint monitoring at {datetime.datetime.utcnow()}")
@@ -60,7 +63,7 @@ def monitor_endpoint():
                               timestamp=datetime.datetime.now(),
                               status_code=status_code,
                               db=db)
-                target.is_down = True
+                    target.is_down = True
             else:
                 target.is_down = False
 
@@ -68,3 +71,8 @@ def monitor_endpoint():
 
     except Exception as e:
         print(f"❌ ERROR: {str(e)}")
+        if db:
+            db.rollback()
+    finally:
+        if db:
+            db.close()

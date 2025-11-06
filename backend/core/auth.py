@@ -1,13 +1,13 @@
 import os
 from typing import Annotated, Optional
-from logger import logger
+from core.logger import logger
 from dotenv import load_dotenv
-from db import db_dependency
+from core.db import db_dependency
 from fastapi import Request, Depends
 from clerk_backend_api import Clerk
 from clerk_backend_api.jwks_helpers import AuthenticateRequestOptions
 
-from models import User
+from core.models import User
 
 load_dotenv()
 

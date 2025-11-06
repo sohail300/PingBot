@@ -3,8 +3,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from starlette import status
 
 from app.email.schema import EmailAlertsResponse
-from logger import logger
-from models import PingTarget
+from core.logger import logger
+from core.models import PingTarget
 
 
 class EmailService:
@@ -23,7 +23,12 @@ class EmailService:
                     detail="User not authenticated"
                 )
 
-            return [EmailAlertsResponse.model_validate(email) for email in user.emails]
+            # Filter out emails with null targets and validate the rest
+            return [
+                EmailAlertsResponse.model_validate(email) 
+                for email in user.emails 
+                if email.target is not None
+            ]
 
         except SQLAlchemyError as e:
             print(f"Database error: {str(e)}")

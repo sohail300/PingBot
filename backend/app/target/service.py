@@ -10,8 +10,8 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from app.target.schema import CreateTarget, TargetListResponse, TargetLogsResponse
-from logger import logger
-from models import User, PingTarget, PingLogs
+from core.logger import logger
+from core.models import User, PingTarget, PingLogs
 
 
 class TargetService:

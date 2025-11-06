@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from app.email.router import email_router
 from app.target.router import target_router
 from app.webhook.router import webhook_router
-from db import engine, Base
+from core.db import engine, Base
 from utils.scheduler import scheduler
 
 load_dotenv()

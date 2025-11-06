@@ -3,7 +3,7 @@ from typing import Dict
 from fastapi import APIRouter, Request
 
 from app.webhook.service import WebhookService
-from db import db_dependency
+from core.db import db_dependency
 
 webhook_router = APIRouter(prefix='/api/webhook', tags=['webhook'])
 

@@ -4,8 +4,8 @@ from datetime import datetime
 import resend
 from dotenv import load_dotenv
 
-from db import db_dependency
-from models import EmailsSent
+from core.db import db_dependency
+from core.models import EmailsSent
 from utils.email_format import subject, html
 
 from utils.dynamic_content import dynamic_content

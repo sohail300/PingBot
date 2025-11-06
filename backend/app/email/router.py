@@ -3,8 +3,8 @@ from fastapi import APIRouter
 from starlette import status
 from app.email.schema import EmailAlertsResponse
 from app.email.service import EmailService
-from db import db_dependency
-from auth import get_current_user_dependency
+from core.db import db_dependency
+from core.auth import get_current_user_dependency
 
 email_router = APIRouter(prefix='/api/email', tags=['email'])
 

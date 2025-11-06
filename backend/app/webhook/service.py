@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 
 from svix.webhooks import Webhook, WebhookVerificationError
 
-from logger import logger
-from models import User
+from core.logger import logger
+from core.models import User
 
 load_dotenv()
 

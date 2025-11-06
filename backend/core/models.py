@@ -2,7 +2,7 @@ from sqlalchemy import Integer, ForeignKey, Boolean, func, UniqueConstraint
 from sqlalchemy import Column, String, Enum, DateTime
 from sqlalchemy.orm import relationship
 
-from db import Base
+from core.db import Base
 
 user_role_enum = Enum(
     "User",
