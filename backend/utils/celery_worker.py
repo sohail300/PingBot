@@ -37,7 +37,7 @@ def monitor_endpoint():
 
         for target in targets:
             start_time = datetime.datetime.utcnow()
-            response = requests.head(target.url) # Pings the URL with a HEAD request
+            response = requests.get(target.url) # Pings the URL with a GET request
             status_code = response.status_code
             end_time = datetime.datetime.utcnow()
             response_time = (end_time - start_time).total_seconds() * 1000  # Convert to milliseconds
