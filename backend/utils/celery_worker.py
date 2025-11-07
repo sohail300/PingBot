@@ -65,7 +65,11 @@ def monitor_endpoint():
                               db=db)
                 target.is_down = True
             else:
+                print(f"✅ Endpoint: {target.name}, URL: {target.url}, Status Code: {status_code}, is_down: {target.is_down}")
+                
                 target.is_down = False
+
+                print(f"✅ Endpoint: {target.name}, URL: {target.url}, Status Code: {status_code}, is_down: {target.is_down}")
             
             db.flush()
 
