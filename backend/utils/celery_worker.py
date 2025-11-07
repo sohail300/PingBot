@@ -63,9 +63,11 @@ def monitor_endpoint():
                               timestamp=datetime.datetime.now(),
                               status_code=status_code,
                               db=db)
-                    target.is_down = True
+                target.is_down = True
             else:
                 target.is_down = False
+            
+            db.flush()
 
         db.commit()
 
