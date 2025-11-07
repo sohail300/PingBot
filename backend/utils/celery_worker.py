@@ -63,16 +63,17 @@ def monitor_endpoint():
                               timestamp=datetime.datetime.now(),
                               status_code=status_code,
                               db=db)
-                target.is_down = True
+                # Use direct database update to ensure the change is saved
+                db.query(PingTarget).filter(PingTarget.id == target.id).update({"is_down": True})
             else:
                 print(f"✅ Endpoint: {target.name}, URL: {target.url}, Status Code: {status_code}, is_down: {target.is_down}")
                 
-                target.is_down = False
-
+                # Use direct database update to ensure the change is saved
+                db.query(PingTarget).filter(PingTarget.id == target.id).update({"is_down": False})
+                
                 print(f"✅ Endpoint: {target.name}, URL: {target.url}, Status Code: {status_code}, is_down: {target.is_down}")
-            
-            db.flush()
 
+        # Commit all changes including is_down updates and log entries
         db.commit()
 
     except Exception as e:
