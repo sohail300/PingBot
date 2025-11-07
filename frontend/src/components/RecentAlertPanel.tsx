@@ -16,7 +16,7 @@ interface Target {
 
 interface Alert {
   id: number;
-  target: Target;
+  target: Target | null;
   created_at: string;
 }
 
@@ -56,6 +56,25 @@ export const RecentAlertsPanel = () => {
   if (error) {
     console.error("Error loading dashboard stats:", error);
     return <div className="text-red-500">Error Loading Recent Alerts</div>;
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <Card className="bg-[#1a1a1c] border-gray-800 shadow-lg rounded-xl overflow-hidden">
+        <CardHeader className="px-4 pb-4 flex items-center justify-between text-white font-medium border-b border-gray-800">
+          <h3 className="text-white font-medium flex items-center">
+            <Bell size={16} className="mr-2 text-[#00ffae]" />
+            Recent Alerts
+          </h3>
+          <Badge className="bg-red-500/20 text-red-400 border-red-500">
+            0 Incidents
+          </Badge>
+        </CardHeader>
+        <div className="p-4 text-center text-gray-400">
+          No recent alerts
+        </div>
+      </Card>
+    );
   }
 
   return (
@@ -99,6 +118,41 @@ const AlertItem = ({ alert }: { alert: Alert }) => {
       hour12: true,
     })} IST`;
   };
+
+  // Handle null target gracefully
+  if (!alert.target) {
+    return (
+      <motion.div
+        variants={itemVariants}
+        className="flex items-center justify-between py-2 px-4 rounded-lg hover:bg-[#1a1a1c] transition-colors"
+      >
+        <div className="flex items-start space-x-4 p-2 hover:bg-gray-800/30 rounded-lg transition-colors w-full">
+          <div className="flex-shrink-0 mt-1">
+            <div
+              className={`h-3 w-3 rounded-full bg-red-500 animate-pulse`}
+            ></div>
+          </div>
+          <div className="flex-grow min-w-0">
+            <div className="space-y-1">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-grow min-w-0">
+                  <h3 className="text-white font-medium truncate">
+                    Unknown Target
+                  </h3>
+                  <p className="text-sm text-gray-300 truncate">
+                    Target information unavailable
+                  </p>
+                </div>
+                <span className="text-xs text-gray-400 whitespace-nowrap">
+                  {formatDate(alert.created_at)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
